@@ -11,8 +11,8 @@ int multiplier = 1.2; // multiplier for LDR differences to confirm panel is full
 
 int laRelayDown = 11; // linear actuator 12v relay to extend
 int laRelayUp = 10; // linear actuator 12v relay to retract 
-int leftSLND = 9; // solenoid control 12v relay left
-int rightSLND = 8; // solenoid control 12v relay right
+int leftSLND = 9; // solenoid control 12v relay left hinge
+int rightSLND = 8; // solenoid control 12v relay right hinge
 
 
 void setup()
