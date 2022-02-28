@@ -3,7 +3,7 @@ Arduino code for sensor and actuator controls.
 
 I’ve been developing a fun little side project: A lay flat, solar tracker for mobile/emergency/home use. Would love to get any feedback you had on the code or the sketches!!
 
-Attached is my first stab at the code for the solar array and a reference to the mechanics. I met with a fabricator yesterday and they are down to help build prototypes! I just started learning Arduino a few days ago, so don’t judge the code too harshly :) It compiles at least!
+Attached is my first stab at the code for the solar array and a reference to the mechanics. I just started learning Arduino a few days ago, so don’t judge the code too harshly :) It compiles at least!
 
 The problem I’m trying to solve is most mobile applications for solar panel tracking 1) Don’t actually track the sun, they just tilt, and 2) can’t track over 45 degrees in BOTH directions. This design will allow the panel to locate and move to the most efficient angle and adjust to the suns movement, regardless of the vehicle's cardinal direction AND lay flat securely when not in use. The Arduino and mechanics should allow this to be tied to the vehicles ignition (or master switch) and have little to no necessary interaction with the user.
 
