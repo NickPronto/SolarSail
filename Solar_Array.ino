@@ -86,7 +86,7 @@ if(analogRead(ignitionSwitch) <= 0 || analogRead(leftLDR) + analogRead(rightLDR)
 
 if(currentMillis - previousMillis >= intervalShort){
   previousMillis = currentMillis;
-  if (multiplier*analogRead(leftLDR) >= analogRead(rightLDR))
+  if (multiplier*analogRead(leftLDR) >= analogRead(rightLDR)) // "multiplier" here gives buffer to LDR differences while transitioning over from left to right tracking, avoiding a situation where both hinges are disconnected.
   {
     trackLeftHigh();
     lowerLeftPanel();
