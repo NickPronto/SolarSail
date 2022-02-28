@@ -7,10 +7,10 @@ int leftLDR = 13; // left LDR sensor input pin
 int rightLDR = 12; // right LDR sensor input pin
 int ignitionSwitch = A0; // ignition or kill switch
 int lightSense = 200; // adjustable light sensitivity based on ambient light at night
-int count = 50; // Max lowering countdown sessions based off 2x delayShort's time.
-int multiplier = 1.2; // multiplier for LDR differences
+int multiplier = 1.2; // multiplier for LDR differences to confirm panel is fully down before switching hinge solenoids.
 
-int laRelay = 11; // linear actuator 12v relay to retract/extend (HIGH - Lower solar panel, LOW - Lift solar panel)
+int laRelayDown = 11; // linear actuator 12v relay to extend
+int laRelayUp = 10; // linear actuator 12v relay to retract 
 int leftSLND = 9; // solenoid control 12v relay left
 int rightSLND = 8; // solenoid control 12v relay right
 
@@ -18,7 +18,8 @@ int rightSLND = 8; // solenoid control 12v relay right
 void setup()
 {
   // put your setup code here, to run once:
-  pinMode(laRelay, OUTPUT);
+  pinMode(laRelayDown, OUTPUT);
+  pinMode(laRelayUp, OUTPUT);
   pinMode(leftSLND, OUTPUT);
   pinMode(rightSLND, OUTPUT);
   pinMode(leftLDR, INPUT);
@@ -28,7 +29,9 @@ void setup()
 }
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
 {
-  digitalWrite(laRelay, HIGH); //linear actuator lowered to lowest point
+  digitalWrite(laRelayDown, HIGH); //linear actuator lowered to lowest point
+ if(currentMillis - previousMillis >= intervalLong){ // delay to allow panel to be completely lowered before locking all sides. Could be removed if we use maglocks over electromagnetic solenoids.
+  previousMillis = currentMillis;
   if (leftSLND == LOW) {
   digitalWrite(leftSLND, HIGH); //lock right hinge solenoid after panel is lowered
   }
@@ -36,7 +39,8 @@ void layFlat() // function to drop the panel to its lowest point and lock both h
     digitalWrite(rightSLND, HIGH); //lock right hinge solenoid after panel is lowered
   }
 }
-
+  digitalWrite(laRelayDown, LOW); //turn off down relay to avoid conflicts 
+}
 
 void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
 {
@@ -44,16 +48,16 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
   digitalWrite(rightSLND, LOW); //unlock right hinge solenoid
   while (analogRead(leftLDR) > analogRead(rightLDR))
   {
-    digitalWrite(laRelay, HIGH); // raise linear actuator until light sensors even one another
+    digitalWrite(laRelayUp, HIGH); // raise linear actuator until light sensors even one another
   }
-  digitalWrite(laRelay, LOW);
+  digitalWrite(laRelayUp, LOW); // stop movement of panel
 }
 void lowerLeftPanel() {
-  if (analogRead(leftLDR) < analogRead(rightLDR) )
+  while (analogRead(leftLDR) < analogRead(rightLDR) )
   {
-    digitalWrite(laRelay, HIGH);
+    digitalWrite(laRelayDown, HIGH);
   }
-  digitalWrite(laRelay, LOW);
+  digitalWrite(laRelayDown, LOW);
 }
 
 void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
@@ -61,23 +65,23 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
   digitalWrite(rightSLND, HIGH); //lock right hinge solenoid
   digitalWrite(leftSLND, LOW); //unlock left hinge solenoid
   while (analogRead(rightLDR) > analogRead(leftLDR)) {
-    digitalWrite(laRelay, HIGH);
+    digitalWrite(laRelayUp, HIGH);
   }
-  digitalWrite(laRelay, LOW);
+    digitalWrite(laRelayUp, LOW); // stop movement of panel
 }
 
 void lowerRightPanel() {
-  if (analogRead(rightLDR) < analogRead(leftLDR))
+  while (analogRead(rightLDR) < analogRead(leftLDR))
   {
-    digitalWrite(laRelay, HIGH);
+    digitalWrite(laRelayDown, HIGH);
   }
 
-  digitalWrite(laRelay, LOW);
+  digitalWrite(laRelayDown, LOW);
 
 }
 
 void loop(){
-unsigned long currentMillis = millis();
+unsigned long currentMillis = millis(); // delay in panel movements to avoid bouncing/jittering
 if(analogRead(ignitionSwitch) <= 0 || analogRead(leftLDR) + analogRead(rightLDR) > lightSense){
 
 if(currentMillis - previousMillis >= intervalShort){
