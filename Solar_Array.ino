@@ -52,10 +52,11 @@ if(currentMillis - previousMillis >= intervalShort){
 
   }
 }
+}
   else {
     layFlat();
   }
-}
+
   }
 
 
