@@ -34,10 +34,10 @@ void setup()
 }
 
 void loop(){
-unsigned long currentMillis = millis(); // delay in panel movements to avoid bouncing/jittering
-if(analogRead(ignitionSwitch) <= 0 || analogRead(leftLDR) + analogRead(rightLDR) > lightSense){
+unsigned long currentMillis = millis(); 
+if(analogRead(ignitionSwitch) <= 0 || analogRead(leftLDR) + analogRead(rightLDR) > lightSense){ //only works when there is ample light and the ignition is off.
 
-if(currentMillis - previousMillis >= intervalShort){
+if(currentMillis - previousMillis >= intervalShort){ // delay in panel movements to avoid bouncing/jittering
   previousMillis = currentMillis;
   if (multiplier*analogRead(leftLDR) >= analogRead(rightLDR)) // "multiplier" here gives buffer to LDR differences while transitioning over from left to right tracking, avoiding a situation where both hinges are disconnected.
   {
@@ -67,7 +67,7 @@ void layFlat() // function to drop the panel to its lowest point and lock both h
   digitalWrite(laRelayDown, HIGH); //linear actuator lowered to lowest point
   digitalWrite(leftSLND, HIGH); //lock right hinge solenoid after panel is lowered
   digitalWrite(rightSLND, HIGH); //lock right hinge solenoid after panel is lowered
- if(currentMillis - previousMillis >= intervalLong){ // delay to allow panel to be completely lowered before locking all sides. 
+ if(currentMillis - previousMillis >= intervalLong){ // delay to confirm panel to be completely lowered. 
   previousMillis = currentMillis;
   digitalWrite(laRelayDown, LOW); 
  }
