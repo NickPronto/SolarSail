@@ -27,6 +27,35 @@ void setup()
   pinMode(ignitionSwitch, INPUT);
 
 }
+
+void loop(){
+unsigned long currentMillis = millis(); // delay in panel movements to avoid bouncing/jittering
+if(analogRead(ignitionSwitch) <= 0 || analogRead(leftLDR) + analogRead(rightLDR) > lightSense){
+
+if(currentMillis - previousMillis >= intervalShort){
+  previousMillis = currentMillis;
+  if (multiplier*analogRead(leftLDR) >= analogRead(rightLDR)) // "multiplier" here gives buffer to LDR differences while transitioning over from left to right tracking, avoiding a situation where both hinges are disconnected.
+  {
+    trackLeftHigh();
+    lowerLeftPanel();
+
+  }
+  else if (analogRead(leftLDR) <= multiplier*analogRead(rightLDR))
+  {
+    trackRightHigh();
+    lowerRightPanel();
+
+  }
+}
+  else {
+    layFlat();
+  }
+}
+  }
+
+
+//-------Functions below-----------
+
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
 {
   digitalWrite(laRelayDown, HIGH); //linear actuator lowered to lowest point
@@ -79,28 +108,3 @@ void lowerRightPanel() {
   digitalWrite(laRelayDown, LOW);
 
 }
-
-void loop(){
-unsigned long currentMillis = millis(); // delay in panel movements to avoid bouncing/jittering
-if(analogRead(ignitionSwitch) <= 0 || analogRead(leftLDR) + analogRead(rightLDR) > lightSense){
-
-if(currentMillis - previousMillis >= intervalShort){
-  previousMillis = currentMillis;
-  if (multiplier*analogRead(leftLDR) >= analogRead(rightLDR)) // "multiplier" here gives buffer to LDR differences while transitioning over from left to right tracking, avoiding a situation where both hinges are disconnected.
-  {
-    trackLeftHigh();
-    lowerLeftPanel();
-
-  }
-  else if (analogRead(leftLDR) <= multiplier*analogRead(rightLDR))
-  {
-    trackRightHigh();
-    lowerRightPanel();
-
-  }
-}
-  else {
-    layFlat();
-  }
-}
-  }
