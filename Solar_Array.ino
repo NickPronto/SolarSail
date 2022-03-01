@@ -1,14 +1,17 @@
+//constants
 unsigned long currentMillis = millis(); // delay period to lower or raise Linear Actuator fully
 unsigned long previousMillis = 0;
 const long intervalLong = 300000; // delay period in between lowering steps.
 const long intervalShort = 5000; // delay period in between lowering steps.
 
+//input pins
 int leftLDR = 13; // left LDR sensor input pin
 int rightLDR = 12; // right LDR sensor input pin
 int ignitionSwitch = A0; // ignition or kill switch
 int lightSense = 200; // adjustable light sensitivity based on ambient light at night
 int multiplier = 1.2; // multiplier for LDR differences to confirm panel is fully down before switching hinge solenoids.
 
+//output pins
 int laRelayDown = 11; // linear actuator 12v relay to extend
 int laRelayUp = 10; // linear actuator 12v relay to retract 
 int leftSLND = 9; // solenoid control 12v relay left hinge
