@@ -4,12 +4,14 @@ unsigned long previousMillis = 0;
 const long intervalLong = 300000; // delay period in between lowering steps.
 const long intervalShort = 5000; // delay period in between lowering steps.
 
+//variables 
+int lightSense = 200; // adjustable light sensitivity based on ambient light at night
+int multiplier = 1.2; // multiplier for LDR differences to confirm panel is fully down before switching hinge solenoids.
+
 //input pins
 int leftLDR = 13; // left LDR sensor input pin
 int rightLDR = 12; // right LDR sensor input pin
 int ignitionSwitch = A0; // ignition or kill switch
-int lightSense = 200; // adjustable light sensitivity based on ambient light at night
-int multiplier = 1.2; // multiplier for LDR differences to confirm panel is fully down before switching hinge solenoids.
 
 //output pins
 int laRelayDown = 11; // linear actuator 12v relay to extend
@@ -62,16 +64,12 @@ if(currentMillis - previousMillis >= intervalShort){
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
 {
   digitalWrite(laRelayDown, HIGH); //linear actuator lowered to lowest point
- if(currentMillis - previousMillis >= intervalLong){ // delay to allow panel to be completely lowered before locking all sides. Could be removed if we use maglocks over electromagnetic solenoids.
-  previousMillis = currentMillis;
-  if (leftSLND == LOW) {
   digitalWrite(leftSLND, HIGH); //lock right hinge solenoid after panel is lowered
-  }
-  if (rightSLND == LOW) {
-    digitalWrite(rightSLND, HIGH); //lock right hinge solenoid after panel is lowered
-  }
-}
-  digitalWrite(laRelayDown, LOW); //turn off down relay to avoid conflicts 
+  digitalWrite(rightSLND, HIGH); //lock right hinge solenoid after panel is lowered
+ if(currentMillis - previousMillis >= intervalLong){ // delay to allow panel to be completely lowered before locking all sides. 
+  previousMillis = currentMillis;
+  digitalWrite(laRelayDown, LOW); 
+ }
 }
 
 void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
