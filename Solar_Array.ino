@@ -13,15 +13,18 @@ int multiplier = 1.2; // multiplier for LDR differences to confirm panel is full
 int rightLDR = A4;
 int leftLDR = A5;
 int ignitionSwitch = 4;
-int ignitionSwitchVal;
-int rightLDRVal;
-int leftLDRVal;
+
 
 //output pins
 int laRelayDown = 13; // linear actuator 12v relay to extend
 int laRelayUp = 12; // linear actuator 12v relay to retract 
 int leftSLND = 7; // solenoid control 12v relay left hinge
 int rightSLND = 8; // solenoid control 12v relay right hinge
+
+// Values
+int ignitionSwitchVal;
+int rightLDRVal;
+int leftLDRVal;
 
 
 
