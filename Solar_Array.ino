@@ -1,27 +1,31 @@
 //constants
 unsigned long currentMillis = millis(); // delay period to lower or raise Linear Actuator fully
 unsigned long previousMillis = 0;
-const long intervalLong = 300000; // delay period in between lowering steps.
+const long intervalLong = 10000; // delay period in between lowering steps.
 const long intervalShort = 5000; // delay period in between lowering steps.
 
 //variables 
-int lightSense = 200; // adjustable light sensitivity based on ambient light at night
+int lightSense = 1; // adjustable light sensitivity based on ambient light at night
 int multiplier = 1.2; // multiplier for LDR differences to confirm panel is fully down before switching hinge solenoids.
 
+
 //input pins
-int leftLDR = 13; // left LDR sensor input pin
-int rightLDR = 12; // right LDR sensor input pin
-int ignitionSwitch = A0; // ignition or kill switch
+int rightLDR;
+int leftLDR;
+int ignitionSwitch;
 
 //output pins
-int laRelayDown = 11; // linear actuator 12v relay to extend
-int laRelayUp = 10; // linear actuator 12v relay to retract 
-int leftSLND = 9; // solenoid control 12v relay left hinge
+int laRelayDown = 13; // linear actuator 12v relay to extend
+int laRelayUp = 12; // linear actuator 12v relay to retract 
+int leftSLND = 7; // solenoid control 12v relay left hinge
 int rightSLND = 8; // solenoid control 12v relay right hinge
 
 
 void setup()
 {
+
+
+Serial.begin(9600);
   // put your setup code here, to run once:
   pinMode(laRelayDown, OUTPUT);
   pinMode(laRelayUp, OUTPUT);
@@ -31,22 +35,39 @@ void setup()
   pinMode(rightLDR, INPUT);
   pinMode(ignitionSwitch, INPUT);
 
+  
+
+
 }
 
 void loop(){
 unsigned long currentMillis = millis(); 
-if(analogRead(ignitionSwitch) <= 0 || analogRead(leftLDR) + analogRead(rightLDR) > lightSense){ //only works when there is ample light and the ignition is off.
+void read();
+
+Serial.print("Left Analog reading: ");
+Serial.print(leftLDR);
+Serial.write( '\r' ); //  Carriage Return
+Serial.print("Right Analog reading: ");
+Serial.print(rightLDR);
+  Serial.write( '\r' ); //  Carriage Return
+  delay(1000);
+  
+if(ignitionSwitch <= 0 || leftLDR + rightLDR > lightSense){ //only works when there is ample light and the ignition is off.
 
 if(currentMillis - previousMillis >= intervalShort){ // delay in panel movements to avoid bouncing/jittering
   previousMillis = currentMillis;
-  if (multiplier*analogRead(leftLDR) >= analogRead(rightLDR)) // "multiplier" here gives buffer to LDR differences while transitioning over from left to right tracking, avoiding a situation where both hinges are disconnected.
+  if (multiplier*leftLDR >= rightLDR) // "multiplier" here gives buffer to LDR differences while transitioning over from left to right tracking, avoiding a situation where both hinges are disconnected.
   {
+    Serial.print("Stuck Left High Panel");
+    sensorRead();
     trackLeftHigh();
     lowerLeftPanel();
 
   }
-  else if (analogRead(leftLDR) <= multiplier*analogRead(rightLDR))
+  else if (leftLDR <= multiplier*rightLDR)
   {
+    Serial.print("Stuck Right High Panel");
+    sensorRead();
     trackRightHigh();
     lowerRightPanel();
 
@@ -54,6 +75,7 @@ if(currentMillis - previousMillis >= intervalShort){ // delay in panel movements
 }
 }
   else {
+    Serial.print("Stuck Lay Flat");
     layFlat();
   }
 
@@ -61,6 +83,13 @@ if(currentMillis - previousMillis >= intervalShort){ // delay in panel movements
 
 
 //-------Functions below-----------
+
+void sensorRead()
+{
+rightLDR = analogRead(A4); // right LDR sensor input pin
+leftLDR = analogRead(A5); // left LDR sensor input pin
+ignitionSwitch = analogRead(A3); // ignition or kill switch
+}
 
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
 {
@@ -77,16 +106,19 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
 {
   digitalWrite(leftSLND, HIGH); //lock left hinge solenoid
   digitalWrite(rightSLND, LOW); //unlock right hinge solenoid
-  while (analogRead(leftLDR) > analogRead(rightLDR))
+  while (leftLDR > rightLDR)
   {
     digitalWrite(laRelayUp, HIGH); // raise linear actuator until light sensors even one another
+    sensorRead();
+    
   }
   digitalWrite(laRelayUp, LOW); // stop movement of panel
 }
 void lowerLeftPanel() {
-  while (analogRead(leftLDR) < analogRead(rightLDR) )
+  while (leftLDR < rightLDR )
   {
     digitalWrite(laRelayDown, HIGH);
+    sensorRead();
   }
   digitalWrite(laRelayDown, LOW);
 }
@@ -95,16 +127,18 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
 {
   digitalWrite(rightSLND, HIGH); //lock right hinge solenoid
   digitalWrite(leftSLND, LOW); //unlock left hinge solenoid
-  while (analogRead(rightLDR) > analogRead(leftLDR)) {
+  while (rightLDR > leftLDR) {
     digitalWrite(laRelayUp, HIGH);
+    sensorRead();
   }
     digitalWrite(laRelayUp, LOW); // stop movement of panel
 }
 
 void lowerRightPanel() {
-  while (analogRead(rightLDR) < analogRead(leftLDR))
+  while (rightLDR < leftLDR)
   {
     digitalWrite(laRelayDown, HIGH);
+        sensorRead();
   }
 
   digitalWrite(laRelayDown, LOW);
