@@ -10,9 +10,12 @@ int multiplier = 1.2; // multiplier for LDR differences to confirm panel is full
 
 
 //input pins
-int rightLDR;
-int leftLDR;
+int rightLDR = A4;
+int leftLDR = A5;
 int ignitionSwitch = 4;
+int ignitionSwitchVal;
+int rightLDRVal;
+int leftLDRVal;
 
 //output pins
 int laRelayDown = 13; // linear actuator 12v relay to extend
@@ -20,7 +23,7 @@ int laRelayUp = 12; // linear actuator 12v relay to retract
 int leftSLND = 7; // solenoid control 12v relay left hinge
 int rightSLND = 8; // solenoid control 12v relay right hinge
 
-int ignitionSwitchVal;
+
 
 
 void setup()
@@ -66,7 +69,7 @@ if(currentMillis - previousMillis >= intervalShort){ // delay in panel movements
     lowerLeftPanel();
 
   }
-  else if (leftLDR <= multiplier*rightLDR)
+  else if (leftLDRVal <= multiplier*rightLDRVal)
   {
     Serial.println("Stuck Right High Panel");
     sensorRead();
@@ -89,8 +92,8 @@ if(currentMillis - previousMillis >= intervalShort){ // delay in panel movements
 
 void sensorRead()
 {
-rightLDR = analogRead(A4); // right LDR sensor input pin
-leftLDR = analogRead(A5); // left LDR sensor input pin
+int rightLDRVal = analogRead(rightLDR); // right LDR sensor input pin
+int leftLDRVal = analogRead(leftLDR); // left LDR sensor input pin
 ignitionSwitchVal=digitalRead(ignitionSwitch); // ignition or kill switch
 }
 
