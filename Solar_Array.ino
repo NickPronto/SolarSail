@@ -1,8 +1,14 @@
 //constants
 unsigned long currentMillis = millis(); // delay period to lower or raise Linear Actuator fully
 unsigned long previousMillis = 0;
-const long intervalLong =1000; // delay period in between lowering steps.
+const long intervalLong = 1000; // delay period in between lowering steps.
 const long intervalShort = 5000; // delay period in between lowering steps.
+
+enum LA{up,down,off};
+enum LA LAstate;
+enum magLock {pull, noPull};
+enum magLock leftState;
+enum magLock rightState;
 
 //variables 
 int lightSense =1; // adjustable light sensitivity based on ambient light at night
@@ -16,10 +22,10 @@ const int ignitionSwitch = 4;
 
 
 //output pins
-int laRelayDown = 12; // linear actuatorHIGH2v relay to extend
-int laRelayUp = 13; // linear actuatorHIGH2v relay to retract 
-int leftSLND = 7; // solenoid controlHIGH2v relay left hinge
-int rightSLND = 8; // solenoid controlHIGH2v relay right hinge
+int laRelayDown = 10; // linear actuator 12v relay to extend
+int laRelayUp = 11; // linear actuator 12v relay to retract 
+int leftSLND = 7; // solenoid control 12v relay left hinge
+int rightSLND = 8; // solenoid control 12v relay right hinge
 
 // Values
 int rightLDRVal;
@@ -30,11 +36,11 @@ int ignitionSwitchVal;
 
 void setup()
 {
-
+LAstate=off;
 Serial.begin(9600);
   // put your setup code here, to run once:
-  pinMode(12, INPUT_PULLUP);
-  pinMode(13, INPUT_PULLUP);
+  pinMode(11, INPUT_PULLUP);
+  pinMode(10, INPUT_PULLUP);
   pinMode(7, INPUT_PULLUP);
   pinMode(8, INPUT_PULLUP);
   
@@ -49,24 +55,26 @@ Serial.begin(9600);
 }
 
 void loop(){
-  sensorRead();
-  if(ignitionSwitchVal == 0){
-    
-  
+currentMillis;
+sensorRead();
+if(ignitionSwitchVal == LOW){
+    LAstate=down;
+    leftState=pull;
+    rightState=pull;
 
-unsigned long currentMillis = millis(); 
+
 
 
   }
 
-else
+else {
    Serial.println("Lay Flat");
    sensorRead();
    layFlat();
   
   }
 
-
+}
 
 //-------Functions below-----------
 void sensorRead()
@@ -74,11 +82,7 @@ void sensorRead()
   
 rightLDRVal = analogRead(rightLDR); // right LDR sensor input pin
 leftLDRVal = analogRead(leftLDR); // left LDR sensor input pin
-ignitionSwitchVal = digitalRead(ignitionSwitch); // ignition or kill switch
-analogRead(rightLDR);
-analogRead(leftLDR);
-digitalRead(ignitionSwitch);
-printOut();
+ignitionSwitchVal = digitalRead(ignitionSwitchVal); // ignition or kill switch
 
 }
 
@@ -92,22 +96,74 @@ Serial.print("Right Analog reading: ");
 Serial.println(rightLDRVal);
 Serial.println();
 Serial.println();
-delay(2000);
+
 }
+void magLockSwitch(){
+  switch(leftState){
+    case pull:
+    digitalWrite(leftSLND,HIGH);
+    break;
+    case noPull:
+    digitalWrite(leftSLND,LOW);
+    break;
+    default:
+    digitalWrite(leftSLND,HIGH);
+    break;
 
+  switch(rightState){
+    case pull:
+    digitalWrite(rightSLND,HIGH);
+    break;
+    case noPull:
+    digitalWrite(rightSLND,LOW);
+    break;
+    default:
+    digitalWrite(rightSLND,HIGH);
+    break;
+  }
+  }
+  }
+ 
+void LASwitch(){
+  
+  switch (LAstate){
+    case up:
+    digitalWrite(1,HIGH);
+    digitalWrite(2,LOW);
+    Serial.println("Switch is Up");
+    Serial.println();
+    break;
 
+    case down:
+    digitalWrite(2,HIGH);
+    digitalWrite(1,LOW);
+    Serial.println("Switch is Down");
+    Serial.println();
+    break;
+
+    case off:
+    digitalWrite(2,LOW);
+    digitalWrite(1,LOW);
+    Serial.println("Switch is Off");
+    Serial.println();
+    break;
+
+    default:
+    digitalWrite(2,LOW);
+    digitalWrite(1,LOW);
+    Serial.println("Switch is Off");
+    Serial.println();
+    break;
+
+  }
+  }
 
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
 {
-  while(ignitionSwitchVal == 0){
-  digitalWrite(laRelayDown,HIGH); //linear actuator lowered to lowest point
-  digitalWrite(leftSLND,HIGH); //lock right hinge solenoid after panel is lowered
-  digitalWrite(rightSLND,HIGH); //lock right hinge solenoid after panel is lowered
-  Serial.println(digitalRead(rightSLND));
-  Serial.println(digitalRead(leftSLND));
-  Serial.println(digitalRead(laRelayDown));
-sensorRead();
-  }
+    LAstate=down;
+    LASwitch();
+    sensorRead();
+
 }
 
 void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
