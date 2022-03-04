@@ -206,7 +206,7 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
 }
 void lowerLeftPanel() {
   sensorRead();
-  if(LASenseCount<intervalLong && leftLDRVal<=rightLDRVal){
+  if(currentCount<intervalLong && leftLDRVal<=rightLDRVal){
     LAstate=down;
     LASwitch();
     sensorRead();
@@ -234,7 +234,7 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
 
 void lowerRightPanel() {
   sensorRead();
-  if(LASenseCount<intervalLong && leftLDRVal>=rightLDRVal){
+  if(currentCount<intervalLong && leftLDRVal>=rightLDRVal){
     LAstate=down;
     LASwitch();
     sensorRead();
