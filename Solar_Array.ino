@@ -1,8 +1,8 @@
 //constants
 unsigned long currentMillis = millis(); // delay period to lower or raise Linear Actuator fully
-unsigned long previousMillis = 0;
+unsigned long currentCount = 0;
 const long intervalLong = 1000; // delay period in between lowering steps.
-const long intervalShort = 5000; // delay period in between lowering steps.
+const long intervalShort = 50000; // delay period in between lowering steps.
 
 enum LA{up,down,off};
 enum LA LAstate;
@@ -21,6 +21,7 @@ const int leftLDR = A5;
 const int ignitionSwitch = 4;
 const int magLockleft = 6;
 const int magLockright = 5;
+const int LASense = 3;
 
 
 //output pins
@@ -33,8 +34,7 @@ const int rightSLND = 8; // solenoid control 12v relay right hinge
 int rightLDRVal;
 int leftLDRVal;
 int ignitionSwitchVal;
-int magSenseLeft;
-int magSenseRight;
+int LASenseCount;
 
 
 
@@ -61,10 +61,11 @@ Serial.begin(9600);
 }
 
 void loop(){
-currentMillis;
+
+
 sensorRead();
 
-attachInterrupt(digitalPinToInterrupt(4), layFlat, RISING); //interrupt if vehicle ignition starts.
+attachInterrupt(digitalPinToInterrupt(4), layFlat, RISING);
 if(ignitionSwitchVal == LOW){ // only works if the ignition is off
 sensorRead();
 layFlat();
@@ -96,15 +97,22 @@ LASwitch();
 
 
 //-------Functions below-----------
+
+void LASenseReset()
+{
+  if(LASenseCount > 0){
+    currentCount = currentMillis;
+  }
+}
+
 void sensorRead()
 {
   
 rightLDRVal = analogRead(rightLDR); // right LDR sensor input pin
 leftLDRVal = analogRead(leftLDR); // left LDR sensor input pin
 ignitionSwitchVal = digitalRead(ignitionSwitchVal); // ignition or kill switch
-magSenseRight = digitalRead(magLockright); //reed sensor on right lock
-magSenseLeft = digitalRead(magLockleft); //reed sensor on left lock
-
+LASenseCount = digitalRead(LASense);
+LASenseReset();
 }
 
 void printOut()
@@ -198,18 +206,15 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
 }
 void lowerLeftPanel() {
   sensorRead();
-  if(magSenseRight != HIGH && leftLDRVal<=rightLDRVal){
+  if(LASenseCount<intervalLong && leftLDRVal<=rightLDRVal){
     LAstate=down;
     LASwitch();
     sensorRead();
   }
-  else if (magSenseRight == LOW && leftLDRVal<=rightLDRVal){
-    LAstate=up;
-    LASwitch();
-    sensorRead();
+  else {
+    trackRightHigh();
   }
-  LAstate=off;
-  LASwitch();
+
 }
 
 
@@ -229,18 +234,15 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
 
 void lowerRightPanel() {
   sensorRead();
-  if(magSenseLeft != HIGH && leftLDRVal>=rightLDRVal){
+  if(LASenseCount<intervalLong && leftLDRVal>=rightLDRVal){
     LAstate=down;
     LASwitch();
     sensorRead();
   }
-  else if (magSenseLeft == LOW && leftLDRVal>=rightLDRVal){
-    LAstate=up;
-    LASwitch();
-    sensorRead();
+  else {
+    trackLeftHigh();
   }
-  LAstate=off;
-  LASwitch();
+
 }
 
 
