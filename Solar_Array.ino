@@ -203,9 +203,15 @@ void lowerLeftPanel() {
     LASwitch();
     sensorRead();
   }
+  else if (magSenseRight == LOW && leftLDRVal<=rightLDRVal){
+    LAstate=up;
+    LASwitch();
+    sensorRead();
+  }
   LAstate=off;
   LASwitch();
 }
+
 
 void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
 {
@@ -225,6 +231,11 @@ void lowerRightPanel() {
   sensorRead();
   if(magSenseLeft != HIGH && leftLDRVal>=rightLDRVal){
     LAstate=down;
+    LASwitch();
+    sensorRead();
+  }
+  else if (magSenseLeft == LOW && leftLDRVal>=rightLDRVal){
+    LAstate=up;
     LASwitch();
     sensorRead();
   }
