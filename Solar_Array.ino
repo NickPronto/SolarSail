@@ -64,7 +64,7 @@ void loop(){
 currentMillis;
 sensorRead();
 
-// place interrupt here instead of an if statement for dropping the panel
+attachInterrupt(digitalPinToInterrupt(4), layFlat, RISING); //interrupt if vehicle ignition starts.
 if(ignitionSwitchVal == LOW){ // only works if the ignition is off
 sensorRead();
 layFlat();
