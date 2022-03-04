@@ -33,6 +33,8 @@ const int rightSLND = 8; // solenoid control 12v relay right hinge
 int rightLDRVal;
 int leftLDRVal;
 int ignitionSwitchVal;
+int magSenseLeft;
+int magSenseRight;
 
 
 
@@ -67,21 +69,30 @@ if(ignitionSwitchVal == LOW){ // only works if the ignition is off
 sensorRead();
 layFlat();
   if(leftLDRVal+rightLDRVal>lightSense){ //only works anything if there is sunlight
-  sensorRead();
+     sensorRead();
 
       if(leftLDRVal>rightLDRVal){
+          sensorRead();
+          trackLeftHigh();
+       }
+     lowerLeftPanel();
+  }
+else if (leftLDRVal<rightLDRVal){
   sensorRead();
-  trackLeftHigh();
+  trackRightHigh();
 }
-else
+lowerRightPanel();
+  }
+  
+
+
+else {
 LAstate=off;
 LASwitch();
 }
-}
-  
-}
 
 
+}
 
 
 //-------Functions below-----------
@@ -91,6 +102,8 @@ void sensorRead()
 rightLDRVal = analogRead(rightLDR); // right LDR sensor input pin
 leftLDRVal = analogRead(leftLDR); // left LDR sensor input pin
 ignitionSwitchVal = digitalRead(ignitionSwitchVal); // ignition or kill switch
+magSenseRight = digitalRead(magLockright); //reed sensor on right lock
+magSenseLeft = digitalRead(magLockleft); //reed sensor on left lock
 
 }
 
@@ -184,12 +197,14 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
     LASwitch();
 }
 void lowerLeftPanel() {
-  while (leftLDRVal < rightLDRVal)
-  {
-    digitalWrite(laRelayDown,HIGH);
+  sensorRead();
+  if(magSenseRight != HIGH && leftLDRVal<=rightLDRVal){
+    LAstate=down;
+    LASwitch();
     sensorRead();
   }
-  digitalWrite(laRelayDown,LOW);
+  LAstate=off;
+  LASwitch();
 }
 
 void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
@@ -207,12 +222,16 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
 }
 
 void lowerRightPanel() {
-  while (rightLDRVal < leftLDRVal)
-  {
-    digitalWrite(laRelayDown,HIGH);
-        sensorRead();
+  sensorRead();
+  if(magSenseLeft != HIGH && leftLDRVal>=rightLDRVal){
+    LAstate=down;
+    LASwitch();
+    sensorRead();
   }
-
-  digitalWrite(laRelayDown,LOW);
-
+  LAstate=off;
+  LASwitch();
 }
+
+
+
+
