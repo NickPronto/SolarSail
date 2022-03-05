@@ -1,8 +1,8 @@
 //constants
-unsigned long currentMillis = millis(); 
+unsigned long currentMillis = millis(); // delay period to lower or raise Linear Actuator fully
 unsigned long currentCount = 0;
-const long intervalLong = 1000; // delay period.
-const long intervalShort = 50000; // longer delay period in between lowering steps.
+const long intervalLong = 1000; // delay period in between lowering steps.
+const long intervalShort = 50000; // delay period in between lowering steps.
 
 enum LA{up,down,off};
 enum LA LAstate;
@@ -69,7 +69,7 @@ attachInterrupt(digitalPinToInterrupt(4), layFlat, RISING);
 if(ignitionSwitchVal == LOW){ // only works if the ignition is off
 sensorRead();
 layFlat();
-  if(leftLDRVal+rightLDRVal>lightSense){ //only works if there is ample sunlight based off lightSense variable setting.
+  if(leftLDRVal+rightLDRVal>lightSense){ //only works anything if there is sunlight
      sensorRead();
 
       if(leftLDRVal>rightLDRVal){
@@ -98,14 +98,14 @@ LASwitch();
 
 //-------Functions below-----------
 
-void LASenseReset() // current sensing on the Linear actuator to understand if it's moving or if it's hit a limit switch. This function resets the count every time current is passed through the linear actuator.
+void LASenseReset()
 {
-  if(LASenseCount > 0){. 
-    currentCount = currentMillis; 
+  if(LASenseCount > 0){
+    currentCount = currentMillis;
   }
 }
 
-void sensorRead() // general sensor reading pass to keep all the functions informed.
+void sensorRead()
 {
   
 rightLDRVal = analogRead(rightLDR); // right LDR sensor input pin
@@ -127,7 +127,7 @@ Serial.println();
 Serial.println();
 
 }
-void magLockSwitch(){ // switchcase to engage or release the electromagnetic hinges depending on where the panel needs to go.
+void magLockSwitch(){
   switch(leftState){
     case pull:
     digitalWrite(leftSLND,HIGH);
@@ -153,7 +153,7 @@ void magLockSwitch(){ // switchcase to engage or release the electromagnetic hin
   }
   }
  
-void LASwitch(){ // linear actuator polarity switch case and stop to extend/retract/stop the linear actuator's movement.
+void LASwitch(){
   
   switch (LAstate){
     case up:
@@ -204,8 +204,10 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
     LAstate=off;
     LASwitch();
 }
-void lowerLeftPanel() { //track the sun when moving from relative left to relative right.
+void lowerLeftPanel() {
   sensorRead();
+  rightState=pull;
+  magLockSwitch();
   if(currentCount<intervalLong && leftLDRVal<=rightLDRVal){
     LAstate=down;
     LASwitch();
@@ -232,8 +234,10 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
     LASwitch();
 }
 
-void lowerRightPanel() { //track the sun when moving from relative right to relative left.
+void lowerRightPanel() {
   sensorRead();
+  leftState=pull;
+  magLockSwitch();
   if(currentCount<intervalLong && leftLDRVal>=rightLDRVal){
     LAstate=down;
     LASwitch();
