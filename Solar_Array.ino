@@ -66,30 +66,30 @@ void loop(){
 sensorRead();
 
 attachInterrupt(digitalPinToInterrupt(4), layFlat, RISING);
+
 if(ignitionSwitchVal == LOW){ // only works if the ignition is off
 sensorRead();
-layFlat();
+
   if(leftLDRVal+rightLDRVal>lightSense){ //only works anything if there is sunlight
      sensorRead();
 
       if(leftLDRVal>rightLDRVal){
           sensorRead();
           trackLeftHigh();
-       }
-     lowerLeftPanel();
+          lowerLeftPanel();
+      }
+      else if (leftLDRVal<rightLDRVal){
+         sensorRead();
+         trackRightHigh();
+         lowerRightPanel();
+      }
   }
-else if (leftLDRVal<rightLDRVal){
-  sensorRead();
-  trackRightHigh();
-}
-lowerRightPanel();
   }
   
 
 
 else {
-LAstate=off;
-LASwitch();
+layFlat();
 }
 
 
