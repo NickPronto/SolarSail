@@ -37,8 +37,6 @@ Serial.begin(9600);
   pinMode(10, INPUT_PULLUP);
   pinMode(7, INPUT_PULLUP);
   pinMode(8, INPUT_PULLUP);
-  pinMode(6, INPUT_PULLUP);
-  pinMode(5, INPUT_PULLUP);
   pinMode(laRelayDown, OUTPUT);
   pinMode(laRelayUp, OUTPUT);
   pinMode(magLockleft, OUTPUT);
