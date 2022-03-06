@@ -34,7 +34,6 @@ const int rightSLND = 8; // solenoid control 12v relay right hinge
 int rightLDRVal;
 int leftLDRVal;
 int ignitionSwitchVal;
-int LASenseCount;
 
 
 
@@ -61,7 +60,6 @@ Serial.begin(9600);
 }
 
 void loop(){
-
 
 sensorRead();
 
@@ -98,21 +96,14 @@ layFlat();
 
 //-------Functions below-----------
 
-void LASenseReset()
-{
-  if(LASenseCount > 0){
-    currentCount = currentMillis;
-  }
-}
+
 
 void sensorRead()
 {
-  
+ignitionSwitchVal = digitalRead(ignitionSwitchVal); // ignition or kill switch  
 rightLDRVal = analogRead(rightLDR); // right LDR sensor input pin
 leftLDRVal = analogRead(leftLDR); // left LDR sensor input pin
-ignitionSwitchVal = digitalRead(ignitionSwitchVal); // ignition or kill switch
-LASenseCount = digitalRead(LASense);
-LASenseReset();
+
 }
 
 void printOut()
@@ -208,14 +199,20 @@ void lowerLeftPanel() {
   sensorRead();
   rightState=pull;
   magLockSwitch();
-  if(currentCount<intervalLong && leftLDRVal<=rightLDRVal){
+ if (leftLDRVal<multiplier*rightLDRVal){
+  trackRightHigh();
+ }
+  else if(leftLDRVal<=rightLDRVal){
     LAstate=down;
     LASwitch();
     sensorRead();
   }
-  else {
-    trackRightHigh();
+  else  {
+    sensorRead();
   }
+  LAstate=off;
+  LASwitch();
+  sensorRead();
 
 }
 
@@ -236,17 +233,22 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
 
 void lowerRightPanel() {
   sensorRead();
-  leftState=pull;
+  rightState=pull;
   magLockSwitch();
-  if(currentCount<intervalLong && leftLDRVal>=rightLDRVal){
+ if (leftLDRVal<multiplier*rightLDRVal){
+  trackRightHigh();
+ }
+  else if(leftLDRVal<=rightLDRVal){
     LAstate=down;
     LASwitch();
     sensorRead();
   }
   else {
-    trackLeftHigh();
+    sensorRead();
   }
-
+  LAstate=off;
+  LASwitch();
+  sensorRead();
 }
 
 
