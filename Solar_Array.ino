@@ -19,16 +19,13 @@ int multiplier = 1.2; // multiplier for LDR differences to confirm panel is full
 const int rightLDR = A4;
 const int leftLDR = A5;
 const int ignitionSwitch = 4;
-const int magLockleft = 6;
-const int magLockright = 5;
-const int LASense = 3;
 
 
 //output pins
 const int laRelayDown = 10; // linear actuator 12v relay to extend
 const int laRelayUp = 11; // linear actuator 12v relay to retract 
-const int leftSLND = 7; // solenoid control 12v relay left hinge
-const int rightSLND = 8; // solenoid control 12v relay right hinge
+const int magLockleft = 7; // solenoid control 12v relay left hinge
+const int magLockright = 8; // solenoid control 12v relay right hinge
 
 // Values
 int rightLDRVal;
@@ -49,8 +46,8 @@ Serial.begin(9600);
   pinMode(5, INPUT_PULLUP);
   pinMode(laRelayDown, OUTPUT);
   pinMode(laRelayUp, OUTPUT);
-  pinMode(leftSLND, OUTPUT);
-  pinMode(rightSLND, OUTPUT);
+  pinMode(magLockleft, OUTPUT);
+  pinMode(magLockright, OUTPUT);
   pinMode(leftLDR, INPUT);
   pinMode(rightLDR, INPUT);
   pinMode(ignitionSwitch, INPUT);
@@ -83,6 +80,8 @@ sensorRead();
       }
   }
   }
+  
+
 
 else {
 layFlat();
@@ -119,24 +118,24 @@ Serial.println();
 void magLockSwitch(){
   switch(leftState){
     case pull:
-    digitalWrite(leftSLND,HIGH);
+    digitalWrite(magLockleft,HIGH);
     break;
     case noPull:
-    digitalWrite(leftSLND,LOW);
+    digitalWrite(magLockleft,LOW);
     break;
     default:
-    digitalWrite(leftSLND,HIGH);
+    digitalWrite(magLockleft,HIGH);
     break;
 
   switch(rightState){
     case pull:
-    digitalWrite(rightSLND,HIGH);
+    digitalWrite(magLockright,HIGH);
     break;
     case noPull:
-    digitalWrite(rightSLND,LOW);
+    digitalWrite(magLockright,LOW);
     break;
     default:
-    digitalWrite(rightSLND,HIGH);
+    digitalWrite(magLockright,HIGH);
     break;
   }
   }
