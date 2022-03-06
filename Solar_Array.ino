@@ -61,12 +61,12 @@ sensorRead();
   if(leftLDRVal+rightLDRVal>lightSense){ //only works anything if there is sunlight
      sensorRead();
 
-      if(leftLDRVal>rightLDRVal){
+      if(leftLDRVal>=rightLDRVal){
           sensorRead();
           trackLeftHigh();
           lowerLeftPanel();
       }
-      else if (leftLDRVal<rightLDRVal){
+      else if (leftLDRVal=<rightLDRVal){
          sensorRead();
          trackRightHigh();
          lowerRightPanel();
