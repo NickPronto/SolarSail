@@ -83,8 +83,6 @@ sensorRead();
       }
   }
   }
-  
-
 
 else {
 layFlat();
