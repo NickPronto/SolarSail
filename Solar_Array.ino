@@ -1,8 +1,3 @@
-//constants
-unsigned long currentMillis = millis(); // delay period to lower or raise Linear Actuator fully
-unsigned long currentCount = 0;
-const long intervalLong = 1000; // delay period in between lowering steps.
-const long intervalShort = 50000; // delay period in between lowering steps.
 
 enum LA{up,down,off};
 enum LA LAstate;
@@ -16,9 +11,9 @@ int multiplier = 1.2; // multiplier for LDR differences to confirm panel is full
 
 
 //input pins
-const int rightLDR = A4;
-const int leftLDR = A5;
-const int ignitionSwitch = 4;
+const int rightLDR = A4; // left light sensor
+const int leftLDR = A5; //right light sensor
+const int ignitionSwitch = 4; // 12v ignition switch pin, high when vechile ignition is in "run"
 
 
 //output pins
