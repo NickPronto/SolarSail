@@ -44,8 +44,6 @@ Serial.begin(9600);
   pinMode(leftLDR, INPUT);
   pinMode(rightLDR, INPUT);
   pinMode(ignitionSwitch, INPUT);
-  pinMode(magLockleft, INPUT);
-  pinMode(magLockright, INPUT);
   sensorRead();
 }
 
