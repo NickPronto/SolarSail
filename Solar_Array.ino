@@ -187,12 +187,11 @@ void lowerLeftPanel() {
     else {
      }
   LinearActuatorSwitch(off);
-  sensorRead();
   }
 
 void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
   {
-    standBySwitch(LOW);
+    standBySwitch(HIGH);
     magLockSwitch(noPull,pull);
     LinearActuatorSwitch(up);
     while (leftLightValue<=rightLightValue){
