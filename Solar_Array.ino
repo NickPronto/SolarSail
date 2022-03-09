@@ -29,6 +29,7 @@ unsigned long currentMillis = millis();
 int previousMillis;
 long interval = 100000; // time to wait till turning off parasitic MagLocks at night. Vehicle must be off to disengage.
 
+
 void setup() {
   attachInterrupt(digitalPinToInterrupt(4), layFlat, RISING);
   Serial.begin(9600);
@@ -47,10 +48,12 @@ void setup() {
   pinMode(rightLightSensor, INPUT);
   pinMode(ignitionSwitch, INPUT);
   pinMode(standByPin, INPUT);
-  }
+}
 
 void loop(){
+
   sensorRead();
+
   if(ignitionSwitchVal == LOW){ // only works if the ignition is off
     if(leftLightValue+rightLightValue>lightSensitivity){ //only works if there is sunlight
       if(leftLightValue>rightLightValue){
@@ -68,7 +71,10 @@ else {
   }
 }
 
+
 //-------Functions below-----------
+
+
 
 void sensorRead()
   {
@@ -88,7 +94,7 @@ void printOut()
   Serial.println();
   Serial.println();
   }
-
+  
 void magLockSwitch(int leftState, int rightState){
   switch(leftState){
     case pull:
@@ -111,11 +117,12 @@ void magLockSwitch(int leftState, int rightState){
     default:
       digitalWrite(magLockRight,HIGH);
       break;
-      }
     }
+  }
   }
  
 void LinearActuatorSwitch(int linearActuatorState){
+  
   switch (linearActuatorState){
   case up:
     digitalWrite(linearActuatorDown,LOW);
@@ -136,16 +143,17 @@ void LinearActuatorSwitch(int linearActuatorState){
     digitalWrite(linearActuatorUp,LOW);
     digitalWrite(linearActuatorDown,LOW);
     break;
+    }
   }
-  }
-void standBySwitch(int standBy){
+void standBySwitch(int standBy)
+  {
      if (standBy=HIGH){
       digitalWrite(standByPin,HIGH);
       }
      else if (standBy=LOW){
       digitalWrite(standByPin,LOW);
       }
-}
+  }
 
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
   {
@@ -168,17 +176,15 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
       }
     LinearActuatorSwitch(off);
   }
-
-void lowerLeftPanel() 
-  {
-  magLockSwitch(noPull,pull);
+void lowerLeftPanel() {
+  magLockSwitch(pull,pull);
     if (leftLightValue<multiplier*rightLightValue){
        trackRightHigh();
      }
     else if(leftLightValue<=rightLightValue){
      LinearActuatorSwitch(down);
      }
-    else{
+    else {
      }
   LinearActuatorSwitch(off);
   sensorRead();
@@ -188,7 +194,6 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
   {
     standBySwitch(LOW);
     magLockSwitch(noPull,pull);
-
     LinearActuatorSwitch(up);
     while (leftLightValue<=rightLightValue){
       sensorRead();
@@ -198,12 +203,12 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
 
 void lowerRightPanel()
   {
-  magLockSwitch(noPull,pull);
- if (leftLightValue<multiplier*rightLightValue){
-  trackRightHigh();
-  }
-  else if(leftLightValue<=rightLightValue){
-    LinearActuatorSwitch(down);
-   }
+  magLockSwitch(pull,pull);
+    if (leftLightValue<multiplier*rightLightValue){
+      trackRightHigh();
+    }
+    else if(leftLightValue<=rightLightValue){
+      LinearActuatorSwitch(down);
+     }
   LinearActuatorSwitch(off);
 }
