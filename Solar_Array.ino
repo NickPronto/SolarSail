@@ -181,7 +181,7 @@ void lowerLeftPanel() {
     if (leftLightValue<multiplier*rightLightValue){
        trackRightHigh();
      }
-    else if(leftLightValue<=rightLightValue){
+    else if(leftLightValue<rightLightValue){
      LinearActuatorSwitch(down);
      }
     else {
@@ -207,7 +207,7 @@ void lowerRightPanel()
     if (leftLightValue<multiplier*rightLightValue){
       trackRightHigh();
     }
-    else if(leftLightValue<=rightLightValue){
+    else if(leftLightValue<rightLightValue){
       LinearActuatorSwitch(down);
      }
   LinearActuatorSwitch(off);
