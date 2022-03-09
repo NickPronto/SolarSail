@@ -14,8 +14,8 @@ const int leftLightSensor = A5; //right light sensor
 const int ignitionSwitch = 4; // 12v ignition switch pin, high when vechile ignition is in "run"
 
 //output pins
-const int linearActuatorDown = 10; // linear actuator 12v relay to extend
-const int linearActuatorUp = 11; // linear actuator 12v relay to retract 
+const int linearActuatorRelay1 = 9; // linear actuator 12v relay to extend
+const int linearActuatorRelay2 = 10; // linear actuator 12v relay to retract 
 const int magLockLeft = 7; // solenoid control 12v relay left hinge
 const int magLockRight = 8; // solenoid control 12v relay right hinge
 const int standByPin = 12; 
@@ -27,7 +27,7 @@ int leftLightValue;
 int ignitionSwitchVal;
 unsigned long currentMillis = millis();
 int previousMillis;
-long interval = 1000000; // time to wait till turning off parasitic MagLocks at night. Vehicle must be off to disengage.
+long interval = 1000000; // time to wait till turning off parasitic MagLocks off at night. Vehicle must be off to disengage.
 
 
 void setup() {
@@ -40,8 +40,8 @@ void setup() {
   pinMode(8, INPUT_PULLUP);
   pinMode(6, INPUT_PULLUP);
   pinMode(5, INPUT_PULLUP);
-  pinMode(linearActuatorDown, OUTPUT);
-  pinMode(linearActuatorUp, OUTPUT);
+  pinMode(linearActuatorRelay1, OUTPUT);
+  pinMode(linearActuatorRelay2, OUTPUT);
   pinMode(magLockLeft, OUTPUT);
   pinMode(magLockRight, OUTPUT);
   pinMode(leftLightSensor, INPUT);
@@ -121,27 +121,27 @@ void magLockSwitch(int leftState, int rightState){
   }
   }
  
-void LinearActuatorSwitch(int linearActuatorState){
+void LinearActuatorSwitch(int linearActuatorState){ 
   
   switch (linearActuatorState){
   case up:
-    digitalWrite(linearActuatorDown,LOW);
-    digitalWrite(linearActuatorUp,HIGH);
+    digitalWrite(linearActuatorRelay1,HIGH);
+    digitalWrite(linearActuatorRelay2,HIGH);
     break;
 
   case down:
-    digitalWrite(linearActuatorUp,LOW);
-    digitalWrite(linearActuatorDown,HIGH);
+    digitalWrite(linearActuatorRelay1,LOW);
+    digitalWrite(linearActuatorRelay2,LOW);
     break;
 
   case off:
-    digitalWrite(linearActuatorUp,LOW);
-    digitalWrite(linearActuatorDown,LOW);
+    digitalWrite(linearActuatorRelay1,HIGH);
+    digitalWrite(linearActuatorRelay2,LOW);
     break;
 
   default:
-    digitalWrite(linearActuatorUp,LOW);
-    digitalWrite(linearActuatorDown,LOW);
+    digitalWrite(linearActuatorRelay1,HIGH);
+    digitalWrite(linearActuatorRelay2,LOW);
     break;
     }
   }
