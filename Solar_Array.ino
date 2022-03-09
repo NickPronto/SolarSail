@@ -27,7 +27,7 @@ int leftLightValue;
 int ignitionSwitchVal;
 unsigned long currentMillis = millis();
 int previousMillis;
-long interval = 100000; // time to wait till turning off parasitic MagLocks at night. Vehicle must be off to disengage.
+long interval = 1000000; // time to wait till turning off parasitic MagLocks at night. Vehicle must be off to disengage.
 
 
 void setup() {
