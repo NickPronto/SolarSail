@@ -21,11 +21,15 @@ const int laRelayDown = 10; // linear actuator 12v relay to extend
 const int laRelayUp = 11; // linear actuator 12v relay to retract 
 const int magLockleft = 7; // solenoid control 12v relay left hinge
 const int magLockright = 8; // solenoid control 12v relay right hinge
+const int stndBy = 12;
 
 // Values
 int rightLDRVal;
 int leftLDRVal;
 int ignitionSwitchVal;
+unsigned long currentMillis = millis();
+int previousMillis;
+long interval = 100000; // time to wait till turning off parasitic magLocks at night. Vehicle must be off to disengage.
 
 
 
@@ -37,6 +41,8 @@ Serial.begin(9600);
   pinMode(10, INPUT_PULLUP);
   pinMode(7, INPUT_PULLUP);
   pinMode(8, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  pinMode(5, INPUT_PULLUP);
   pinMode(laRelayDown, OUTPUT);
   pinMode(laRelayUp, OUTPUT);
   pinMode(magLockleft, OUTPUT);
@@ -44,6 +50,7 @@ Serial.begin(9600);
   pinMode(leftLDR, INPUT);
   pinMode(rightLDR, INPUT);
   pinMode(ignitionSwitch, INPUT);
+  pinMode(stndBy, INPUT);
   sensorRead();
 }
 
@@ -59,20 +66,18 @@ sensorRead();
   if(leftLDRVal+rightLDRVal>lightSense){ //only works anything if there is sunlight
      sensorRead();
 
-      if(leftLDRVal>=rightLDRVal){
+      if(leftLDRVal>rightLDRVal){
           sensorRead();
           trackLeftHigh();
           lowerLeftPanel();
       }
-      else if (leftLDRVal=<rightLDRVal){
+      else if (leftLDRVal<rightLDRVal){
          sensorRead();
          trackRightHigh();
          lowerRightPanel();
       }
   }
   }
-  
-
 
 else {
 layFlat();
@@ -167,11 +172,19 @@ void layFlat() // function to drop the panel to its lowest point and lock both h
     rightState=pull;
     magLockSwitch();
     sensorRead();
-
+ 
+  if(currentMillis - previousMillis > interval && ignitionSwitchVal == LOW) {  // turn off parasitic drain on batteries at night when panels are lowered.
+    previousMillis = currentMillis; 
+    leftState=noPull;
+    rightState=noPull;
+    magLockSwitch(); 
+   digitalWrite(stndBy,LOW);
+  }
 }
 
 void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
 {
+    digitalWrite(stndBy,HIGH);
     leftState=pull;
     rightState=noPull;
     magLockSwitch();
@@ -207,6 +220,7 @@ void lowerLeftPanel() {
 
 void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
 {
+    digitalWrite(stndBy,HIGH);
     leftState=noPull;
     rightState=pull;
     magLockSwitch();
@@ -238,7 +252,3 @@ void lowerRightPanel() {
   LASwitch();
   sensorRead();
 }
-
-
-
-
