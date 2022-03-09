@@ -88,7 +88,7 @@ void sensorRead()
   }
 
 void printOut()
-{
+  {
   Serial.print("Ignition on: ");
   Serial.println(ignitionSwitchVal);
   Serial.print("Left Analog reading: ");
@@ -97,8 +97,8 @@ void printOut()
   Serial.println(rightLightValue);
   Serial.println();
   Serial.println();
+  }
 
-}
 void magLockSwitch(int leftState, int rightState){
   switch(leftState){
     case pull:
@@ -121,12 +121,11 @@ void magLockSwitch(int leftState, int rightState){
     default:
       digitalWrite(magLockRight,HIGH);
       break;
+      }
     }
-  }
   }
  
 void LinearActuatorSwitch(int linearActuatorState){
-  
   switch (linearActuatorState){
   case up:
     digitalWrite(linearActuatorDown,LOW);
@@ -141,14 +140,12 @@ void LinearActuatorSwitch(int linearActuatorState){
   case off:
     digitalWrite(linearActuatorUp,LOW);
     digitalWrite(linearActuatorDown,LOW);
-
     break;
 
   default:
     digitalWrite(linearActuatorUp,LOW);
     digitalWrite(linearActuatorDown,LOW);
     break;
-
   }
   }
 void standBySwitch(int standBy){
@@ -179,9 +176,9 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
     while (leftLightValue>=rightLightValue){
       sensorRead();
       }
-
     LinearActuatorSwitch(off);
 }
+
 void lowerLeftPanel() {
   magLockSwitch(noPull,pull);
     if (leftLightValue<multiplier*rightLightValue){
