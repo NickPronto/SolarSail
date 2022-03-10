@@ -34,12 +34,12 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(4), layFlat, RISING);
   Serial.begin(9600);
   // put your setup code here, to run once:
-  pinMode(11, INPUT_PULLUP);
   pinMode(10, INPUT_PULLUP);
+  pinMode(9, INPUT_PULLUP);
   pinMode(7, INPUT_PULLUP);
   pinMode(8, INPUT_PULLUP);
-  pinMode(6, INPUT_PULLUP);
-  pinMode(5, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  pinMode(12, INPUT_PULLUP);
   pinMode(linearActuatorRelay1, OUTPUT);
   pinMode(linearActuatorRelay2, OUTPUT);
   pinMode(magLockLeft, OUTPUT);
