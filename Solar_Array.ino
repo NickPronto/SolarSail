@@ -6,7 +6,7 @@ MagLock rightState;
 
 //variables 
 int lightSensitivity = 10; // adjustable light sensitivity based on ambient light at night
-int multiplier = 1.2; // multiplier for LDR differences to confirm panel is fully down before switching hinge solenoids.
+int multiplier = 1.2; // multiplier for LDR differences to confirm panel is fully down before switching hinge magLocks.
 
 //input pins
 const int rightLightSensor = A4; // left light sensor
