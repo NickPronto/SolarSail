@@ -18,8 +18,6 @@ const int linearActuatorRelay1 = 9; // linear actuator 12v relay to extend
 const int linearActuatorRelay2 = 10; // linear actuator 12v relay to retract 
 const int magLockLeft = 7; // solenoid control 12v relay left hinge
 const int magLockRight = 8; // solenoid control 12v relay right hinge
-const int standByPin = 12; 
-int standBy = HIGH; //standby pin turn off motor controller when not in use to reduce parasitic drain of battery after interval period.
 
 // Values
 int rightLightValue;
@@ -39,7 +37,6 @@ void setup() {
   pinMode(7, INPUT_PULLUP);
   pinMode(8, INPUT_PULLUP);
   pinMode(4, INPUT_PULLUP);
-  pinMode(12, INPUT_PULLUP);
   pinMode(linearActuatorRelay1, OUTPUT);
   pinMode(linearActuatorRelay2, OUTPUT);
   pinMode(magLockLeft, OUTPUT);
@@ -140,16 +137,6 @@ void LinearActuatorSwitch(int linearActuatorState){
     }
   }
 
-void standBySwitch(int standBy)
-  {
-     if (standBy=HIGH){
-      digitalWrite(standByPin,HIGH);
-      }
-     else if (standBy=LOW){
-      digitalWrite(standByPin,LOW);
-      }
-  }
-
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
   {
     LinearActuatorSwitch(down);
@@ -157,13 +144,11 @@ void layFlat() // function to drop the panel to its lowest point and lock both h
     if(currentMillis - previousMillis > interval && ignitionSwitchVal == LOW) {  // turn off parasitic drain on batteries at night when panels are lowered.
       previousMillis = currentMillis; 
       magLockSwitch(noPull,noPull); 
-      standBySwitch(LOW);
       }
   }
 
 void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
   {
-    standBySwitch(HIGH);
     magLockSwitch(pull,noPull);
     LinearActuatorSwitch(up);
     while (leftLightValue>=rightLightValue){
@@ -185,7 +170,6 @@ void lowerLeftPanel() {
 
 void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
   {
-    standBySwitch(HIGH);
     magLockSwitch(noPull,pull);
     LinearActuatorSwitch(up);
     while (leftLightValue<=rightLightValue){
