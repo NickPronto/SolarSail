@@ -140,7 +140,7 @@ void layFlat() // function to drop the panel to its lowest point and lock both h
   {
     LinearActuatorSwitch(down);
     magLockSwitch(pull,pull);
-    if(currentMillis - previousMillis > interval && ignitionSwitchVal == LOW) {  // turn off parasitic drain on batteries at night when panels are lowered.
+    if(currentMillis - previousMillis > interval && ignitionSwitchVal == LOW) {  // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
       previousMillis = currentMillis; 
       magLockSwitch(noPull,noPull); 
       }
