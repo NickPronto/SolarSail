@@ -51,9 +51,7 @@ void setup() {
 }
 
 void loop(){
-
   sensorRead();
-
   if(ignitionSwitchVal == LOW){ // only works if the ignition is off
     if(leftLightValue+rightLightValue>lightSensitivity){ //only works if there is sunlight
       if(leftLightValue>rightLightValue){
@@ -71,10 +69,7 @@ else {
   }
 }
 
-
 //-------Functions below-----------
-
-
 
 void sensorRead()
   {
@@ -122,7 +117,6 @@ void magLockSwitch(int leftState, int rightState){
   }
  
 void LinearActuatorSwitch(int linearActuatorState){ 
-  
   switch (linearActuatorState){
   case up:
     digitalWrite(linearActuatorRelay1,HIGH);
@@ -145,6 +139,7 @@ void LinearActuatorSwitch(int linearActuatorState){
     break;
     }
   }
+
 void standBySwitch(int standBy)
   {
      if (standBy=HIGH){
@@ -176,15 +171,14 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
       }
     LinearActuatorSwitch(off);
   }
+
 void lowerLeftPanel() {
   magLockSwitch(pull,pull);
     if (leftLightValue<multiplier*rightLightValue){
        trackRightHigh();
      }
-    else if(leftLightValue<rightLightValue){
+    while(leftLightValue<=rightLightValue){
      LinearActuatorSwitch(down);
-     }
-    else {
      }
   LinearActuatorSwitch(off);
   }
@@ -206,7 +200,7 @@ void lowerRightPanel()
     if (leftLightValue<multiplier*rightLightValue){
       trackRightHigh();
     }
-    else if(leftLightValue<rightLightValue){
+    while(leftLightValue<=rightLightValue){
       LinearActuatorSwitch(down);
      }
   LinearActuatorSwitch(off);
