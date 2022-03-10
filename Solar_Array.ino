@@ -44,7 +44,6 @@ void setup() {
   pinMode(leftLightSensor, INPUT);
   pinMode(rightLightSensor, INPUT);
   pinMode(ignitionSwitch, INPUT);
-  pinMode(standByPin, INPUT);
 }
 
 void loop(){
