@@ -26,7 +26,7 @@ int leftLightValue;
 int ignitionSwitchVal;
 unsigned long currentMillis = millis();
 int previousMillis;
-long interval = 1000000; // time to wait till turning off parasitic MagLocks off at night. Vehicle must be off to disengage.
+long interval = 10; // Minutes to wait till turning off parasitic MagLocks off at night. Vehicle must be off to disengage.
 
 
 void setup() {
@@ -142,7 +142,7 @@ void layFlat() // function to drop the panel to its lowest point and lock both h
 {
   LinearActuatorSwitch(down);
   magLockSwitch(lock, lock);
-  if (currentMillis - previousMillis > interval && ignitionSwitchVal == LOW) { // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
+  if (currentMillis - previousMillis > (interval*60000) && ignitionSwitchVal == LOW) { // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
     previousMillis = currentMillis;
     magLockSwitch(unlock, unlock);
   }
