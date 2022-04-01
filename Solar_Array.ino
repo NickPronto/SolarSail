@@ -64,12 +64,10 @@ void setup() {
 void loop() {
   sensorRead();
   if (leftLightValue > rightLightValue) {
-    trackLeftHigh();
-    lowerLeftPanel();
+    trackLeft();
   }
-  else if (leftLightValue < rightLightValue) {
-    trackRightHigh();
-    lowerRightPanel();
+  else {
+    trackRight();
   }
 }
 
@@ -195,45 +193,48 @@ void LinearActuatorSwitch(int linearActuatorState) {
   }
 }
 
-void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
-{
-  magLockSwitch(lock, unlock);
-  LinearActuatorSwitch(up);
-  while (leftLightValue > rightLightValue) {
-    sensorRead();
+void trackLeft() { //function to lift and track if the sun is to the relative left of the panel
+  if (magLockRightSense == LOW) {
+    while (leftLightValue > rightLightValue) {
+      magLockSwitch(lock, unlock);
+      LinearActuatorSwitch(up);
+    }
+    LinearActuatorSwitch(off);
   }
-  LinearActuatorSwitch(off);
+  lowerLeftPanel();
 }
 
 void lowerLeftPanel() {
   magLockSwitch(lock, lock);
+  while (leftLightValue < rightLightValue) {
+    LinearActuatorSwitch(down);
+  }
+  LinearActuatorSwitch(off);
   if (magLockRightSense == HIGH) {
-    trackRightHigh();
+    trackRight();
   }
-  while (leftLightValue < rightLightValue) {
-    LinearActuatorSwitch(down);
-  }
-  LinearActuatorSwitch(off);
+
 }
 
-void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
-{
-  magLockSwitch(unlock, lock);
-  LinearActuatorSwitch(up);
-  while (leftLightValue < rightLightValue) {
-    sensorRead();
+void trackRight() {// function to lift and track if the sun is to the relative right of the panel
+  if (magLockLeftSense == LOW) {
+    while (leftLightValue < rightLightValue) {
+      magLockSwitch(unlock, lock);
+      LinearActuatorSwitch(up);
+    }
+    LinearActuatorSwitch(off);
   }
-  LinearActuatorSwitch(off);
+  lowerRightPanel();
 }
 
-void lowerRightPanel()
-{
+void lowerRightPanel() {
   magLockSwitch(lock, lock);
-  if (magLockLeftSense == HIGH) {
-    trackLeftHigh();
-  }
-  while (leftLightValue < rightLightValue) {
+  while (leftLightValue > rightLightValue) {
     LinearActuatorSwitch(down);
   }
   LinearActuatorSwitch(off);
+  if (magLockLeftSense == HIGH) {
+    trackRight();
+  }
+
 }
