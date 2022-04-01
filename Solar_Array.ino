@@ -63,20 +63,13 @@ void setup() {
 
 void loop() {
   sensorRead();
-  if (ignitionSwitchVal < HIGH) { // only works if the ignition is off
-    if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
-      if (leftLightValue > rightLightValue) {
-        trackLeftHigh();
-        lowerLeftPanel();
-      }
-      else if (leftLightValue < rightLightValue) {
-        trackRightHigh();
-        lowerRightPanel();
-      }
-    }
+  if (leftLightValue > rightLightValue) {
+    trackLeftHigh();
+    lowerLeftPanel();
   }
-  else {
-    layFlat();
+  else if (leftLightValue < rightLightValue) {
+    trackRightHigh();
+    lowerRightPanel();
   }
 }
 
@@ -119,120 +112,126 @@ void sensorRead()
   magLockRightSense = digitalRead(magLockRightSense_pin);
   magLockLeftSense = digitalRead(magLockLeftSense_pin);
   ignitionSwitchVal = digitalRead(ignitionSwitch_pin); // ignition or kill switch
-  if (manualToggle = 2) {
-    manualSwitch(wait);
-  }
-  else {
-    if (currentMillis - previousMillis > delayInterval * 60000) {
-      LightSensor.SetAddress(Device_Address_H);
-      leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
-      LightSensor.SetAddress(Device_Address_L);
-      rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
-      currentMillis = previousMillis;
+  if (ignitionSwitchVal == LOW) { // only works if the ignition is off
+    if (manualToggle = 2) {
+      manualSwitch(wait);
     }
-  }
-}
-  void printOut()
-  {
-    Serial.print("Ignition on: ");
-    Serial.println(ignitionSwitchVal);
-    Serial.print("Left light sensor reading: ");
-    Serial.println(leftLightValue);
-    Serial.print("Right light sensor reading: ");
-    Serial.println(rightLightValue);
-    Serial.println();
-    Serial.println();
-  }
-
-  void magLockSwitch(int, int) {
-    switch (leftState) {
-      case lock:
-        digitalWrite(magLockLeft_pin, HIGH);
-        break;
-      case unlock:
-        digitalWrite(magLockLeft_pin, LOW);
-        break;
-      default:
-        digitalWrite(magLockLeft_pin, HIGH);
-        break;
-    }
-    switch (rightState) {
-      case lock:
-            digitalWrite(magLockRight_pin, HIGH);
-            break;
-      case unlock:
-            digitalWrite(magLockRight_pin, LOW);
-            break;
-      default:
-            digitalWrite(magLockRight_pin, HIGH);
-            break;
+    else {
+      if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
+        if (currentMillis - previousMillis > delayInterval * 60000) {
+          LightSensor.SetAddress(Device_Address_H);
+          leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
+          LightSensor.SetAddress(Device_Address_L);
+          rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
+          currentMillis = previousMillis;
         }
-    
-  }
-
-  void LinearActuatorSwitch(int) {
-    switch (linearActuatorState) {
-      case up:
-        digitalWrite(linearActuatorRelay1_pin, HIGH);
-        digitalWrite(linearActuatorRelay2_pin, HIGH);
-        break;
-
-      case down:
-        digitalWrite(linearActuatorRelay1_pin, LOW);
-        digitalWrite(linearActuatorRelay2_pin, LOW);
-        break;
-
-      case off:
-        digitalWrite(linearActuatorRelay1_pin, HIGH);
-        digitalWrite(linearActuatorRelay2_pin, LOW);
-        break;
-
-      default:
-        digitalWrite(linearActuatorRelay1_pin, HIGH);
-        digitalWrite(linearActuatorRelay2_pin, LOW);
-        break;
+      }
+      else {
+        layFlat();
+      }
     }
-  }
 
-  void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
-  {
-    magLockSwitch(lock, unlock);
-    LinearActuatorSwitch(up);
-    while (leftLightValue > rightLightValue) {
-      sensorRead();
+    void printOut()
+    {
+      Serial.print("Ignition on: ");
+      Serial.println(ignitionSwitchVal);
+      Serial.print("Left light sensor reading: ");
+      Serial.println(leftLightValue);
+      Serial.print("Right light sensor reading: ");
+      Serial.println(rightLightValue);
+      Serial.println();
+      Serial.println();
     }
-    LinearActuatorSwitch(off);
-  }
 
-  void lowerLeftPanel() {
-    magLockSwitch(lock, lock);
-    if (magLockRightSense == HIGH) {
-      trackRightHigh();
-    }
-    while (leftLightValue < rightLightValue) {
-      LinearActuatorSwitch(down);
-    }
-    LinearActuatorSwitch(off);
-  }
+    void magLockSwitch(int, int) {
+      switch (leftState) {
+        case lock:
+          digitalWrite(magLockLeft_pin, HIGH);
+          break;
+        case unlock:
+          digitalWrite(magLockLeft_pin, LOW);
+          break;
+        default:
+          digitalWrite(magLockLeft_pin, HIGH);
+          break;
+      }
+      switch (rightState) {
+        case lock:
+          digitalWrite(magLockRight_pin, HIGH);
+          break;
+        case unlock:
+          digitalWrite(magLockRight_pin, LOW);
+          break;
+        default:
+          digitalWrite(magLockRight_pin, HIGH);
+          break;
+      }
 
-  void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
-  {
-    magLockSwitch(unlock, lock);
-    LinearActuatorSwitch(up);
-    while (leftLightValue < rightLightValue) {
-      sensorRead();
     }
-    LinearActuatorSwitch(off);
-  }
 
-  void lowerRightPanel()
-  {
-    magLockSwitch(lock, lock);
-    if (magLockLeftSense == HIGH) {
-      trackLeftHigh();
+    void LinearActuatorSwitch(int) {
+      switch (linearActuatorState) {
+        case up:
+          digitalWrite(linearActuatorRelay1_pin, HIGH);
+          digitalWrite(linearActuatorRelay2_pin, HIGH);
+          break;
+
+        case down:
+          digitalWrite(linearActuatorRelay1_pin, LOW);
+          digitalWrite(linearActuatorRelay2_pin, LOW);
+          break;
+
+        case off:
+          digitalWrite(linearActuatorRelay1_pin, HIGH);
+          digitalWrite(linearActuatorRelay2_pin, LOW);
+          break;
+
+        default:
+          digitalWrite(linearActuatorRelay1_pin, HIGH);
+          digitalWrite(linearActuatorRelay2_pin, LOW);
+          break;
+      }
     }
-    while (leftLightValue < rightLightValue) {
-      LinearActuatorSwitch(down);
+
+    void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
+    {
+      magLockSwitch(lock, unlock);
+      LinearActuatorSwitch(up);
+      while (leftLightValue > rightLightValue) {
+        sensorRead();
+      }
+      LinearActuatorSwitch(off);
     }
-    LinearActuatorSwitch(off);
-  }
+
+    void lowerLeftPanel() {
+      magLockSwitch(lock, lock);
+      if (magLockRightSense == HIGH) {
+        trackRightHigh();
+      }
+      while (leftLightValue < rightLightValue) {
+        LinearActuatorSwitch(down);
+      }
+      LinearActuatorSwitch(off);
+    }
+
+    void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
+    {
+      magLockSwitch(unlock, lock);
+      LinearActuatorSwitch(up);
+      while (leftLightValue < rightLightValue) {
+        sensorRead();
+      }
+      LinearActuatorSwitch(off);
+    }
+
+    void lowerRightPanel()
+    {
+      magLockSwitch(lock, lock);
+      if (magLockLeftSense == HIGH) {
+        trackLeftHigh();
+      }
+      while (leftLightValue < rightLightValue) {
+        LinearActuatorSwitch(down);
+      }
+      LinearActuatorSwitch(off);
+    }
