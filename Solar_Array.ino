@@ -207,10 +207,12 @@ void trackLeft() { //function to lift and track if the sun is to the relative le
   else if (magLockRightSense == HIGH && magLockLeftSense == LOW) {
     lowerLeftPanel();
   }
+  else {
+    layFlat();
+  }
 }
 
 void lowerLeftPanel() {
-
   while (leftLightValue > rightLightValue) {
     LinearActuatorSwitch(down);
   }
@@ -230,6 +232,9 @@ void trackRight() {// function to lift and track if the sun is to the relative r
   }
   else if (magLockRightSense == LOW && magLockLeftSense == HIGH) {
     lowerRightPanel();
+  }
+  else {
+    layFlat();
   }
 }
 
