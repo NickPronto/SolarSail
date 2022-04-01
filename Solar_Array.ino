@@ -8,29 +8,30 @@ LinearActuator linearActuatorState;
 enum MagLock {lock, unlock};
 MagLock leftState;
 MagLock rightState;
+enum appSignal {left, right, stop, flat};
+appSignal panelMove;
 
 //variables
 int lightSensitivity = 100; // adjustable light sensitivity based on ambient light at night
-int manualToggle = 1; //app input for manual mode: 2 "Manual", 1 "Automatic", default automatic, for non-app users.
+int manualToggle; //app input for manual mode: 1 = "Automatic", 2 = "Manual", default automatic, for non-app users.
 
 //input pins
-const int rightLightSensor = 22; // left light sensor
-const int leftLightSensor = 21; //right light sensor
-const int magLockRightSense = 25;
-const int magLockLeftSense = 26;
-const int ignitionSwitch = 34; // 12v ignition switch pin, high when vechile ignition is in "run"
-
+const int rightLightSensor_pin = 22; // left light sensor
+const int leftLightSensor_pin = 21; //right light sensor
+const int magLockRightSense_pin = 25;
+const int magLockLeftSense_pin = 26;
+const int ignitionSwitch_pin = 34; // 12v ignition switch pin, high when vechile ignition is in "run"
 
 //output pins
-const int linearActuatorRelay1 = 4; // linear actuator 12v relay to extend
-const int linearActuatorRelay2 = 2; // linear actuator 12v relay to retract
-const int magLockLeft = 16; // solenoid control 12v relay left hinge
-const int magLockRight = 17; // solenoid control 12v relay right hinge
+const int linearActuatorRelay1_pin = 4; // linear actuator 12v relay to extend
+const int linearActuatorRelay2_pin = 2; // linear actuator 12v relay to retract
+const int magLockLeft_pin = 16; // solenoid control 12v relay left hinge
+const int magLockRight_pin = 17; // solenoid control 12v relay right hinge
 
 // Values
 uint16_t leftLightValue;
 uint16_t rightLightValue;
-int panelMove;
+
 
 int ignitionSwitchVal;
 unsigned long currentMillis = millis();
@@ -40,20 +41,22 @@ long interval = 10; // Minutes to wait till turning off parasitic MagLocks off a
 
 
 void setup() {
-  attachInterrupt(digitalPinToInterrupt(ignitionSwitch), layFlat, RISING);
+  attachInterrupt(digitalPinToInterrupt(ignitionSwitch_pin), layFlat, RISING);
   LightSensor.begin();
   LightSensor.SetMode(OneTime_L_resolution_Mode);
   Serial.begin(115200);
 
-  pinMode(magLockRightSense, INPUT_PULLUP);
-  pinMode(magLockLeftSense, INPUT_PULLUP);
-  pinMode(linearActuatorRelay1, OUTPUT);
-  pinMode(linearActuatorRelay2, OUTPUT);
-  pinMode(magLockLeft, OUTPUT);
-  pinMode(magLockRight, OUTPUT);
-  pinMode(leftLightSensor, INPUT);
-  pinMode(rightLightSensor, INPUT);
-  pinMode(ignitionSwitch, INPUT);
+  pinMode(magLockRightSense_pin, INPUT_PULLUP);
+  pinMode(magLockLeftSense_pin, INPUT_PULLUP);
+  pinMode(linearActuatorRelay1_pin, OUTPUT);
+  pinMode(linearActuatorRelay2_pin, OUTPUT);
+  pinMode(magLockLeft_pin, OUTPUT);
+  pinMode(magLockRight_pin, OUTPUT);
+  pinMode(leftLightSensor_pin, INPUT);
+  pinMode(rightLightSensor_pin, INPUT);
+  pinMode(ignitionSwitch_pin, INPUT);
+
+  manualToggle = 1; //default to automatic
 
 }
 
@@ -88,20 +91,20 @@ void layFlat() // function to drop the panel to its lowest point and lock both h
 }
 
 
-void manualMode() {
+void manualSwitch(int) {
   switch (panelMove) {
-    case 1:
+    case left:
       leftLightValue = 1 + lightSensitivity;
       rightLightValue = 0;
       break;
-    case 2:
+    case right:
       rightLightValue = 1 + lightSensitivity;
       leftLightValue = 0;
       break;
-    case 3:
+    case stop:
       rightLightValue = leftLightValue;
       break;
-    case 4:
+    case flat:
       layFlat();
       break;
     default:
@@ -111,9 +114,9 @@ void manualMode() {
 
 void sensorRead()
 {
-  ignitionSwitchVal = digitalRead(ignitionSwitch); // ignition or kill switch
+  ignitionSwitchVal = digitalRead(ignitionSwitch_pin); // ignition or kill switch
   if (manualToggle = 2) {
-    manualMode();
+    manualSwitch(flat);
   }
   else {
     LightSensor.SetAddress(Device_Address_H);
@@ -122,6 +125,7 @@ void sensorRead()
     rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
   }
 }
+
 void printOut()
 {
   Serial.print("Ignition on: ");
@@ -137,24 +141,24 @@ void printOut()
 void magLockSwitch(int leftState, int rightState) {
   switch (leftState) {
     case lock:
-      digitalWrite(magLockLeft, HIGH);
+      digitalWrite(magLockLeft_pin, HIGH);
       break;
     case unlock:
-      digitalWrite(magLockLeft, LOW);
+      digitalWrite(magLockLeft_pin, LOW);
       break;
     default:
-      digitalWrite(magLockLeft, HIGH);
+      digitalWrite(magLockLeft_pin, HIGH);
       break;
 
       switch (rightState) {
         case lock:
-          digitalWrite(magLockRight, HIGH);
+          digitalWrite(magLockRight_pin, HIGH);
           break;
         case unlock:
-          digitalWrite(magLockRight, LOW);
+          digitalWrite(magLockRight_pin, LOW);
           break;
         default:
-          digitalWrite(magLockRight, HIGH);
+          digitalWrite(magLockRight_pin, HIGH);
           break;
       }
   }
@@ -163,23 +167,23 @@ void magLockSwitch(int leftState, int rightState) {
 void LinearActuatorSwitch(int linearActuatorState) {
   switch (linearActuatorState) {
     case up:
-      digitalWrite(linearActuatorRelay1, HIGH);
-      digitalWrite(linearActuatorRelay2, HIGH);
+      digitalWrite(linearActuatorRelay1_pin, HIGH);
+      digitalWrite(linearActuatorRelay2_pin, HIGH);
       break;
 
     case down:
-      digitalWrite(linearActuatorRelay1, LOW);
-      digitalWrite(linearActuatorRelay2, LOW);
+      digitalWrite(linearActuatorRelay1_pin, LOW);
+      digitalWrite(linearActuatorRelay2_pin, LOW);
       break;
 
     case off:
-      digitalWrite(linearActuatorRelay1, HIGH);
-      digitalWrite(linearActuatorRelay2, LOW);
+      digitalWrite(linearActuatorRelay1_pin, HIGH);
+      digitalWrite(linearActuatorRelay2_pin, LOW);
       break;
 
     default:
-      digitalWrite(linearActuatorRelay1, HIGH);
-      digitalWrite(linearActuatorRelay2, LOW);
+      digitalWrite(linearActuatorRelay1_pin, HIGH);
+      digitalWrite(linearActuatorRelay2_pin, LOW);
       break;
   }
 }
@@ -196,7 +200,7 @@ void trackLeftHigh() //function to lift and track if the sun is to the relative 
 
 void lowerLeftPanel() {
   magLockSwitch(lock, lock);
-  if (magLockRightSense == HIGH) {
+  if (magLockRightSense_pin == HIGH) {
     trackRightHigh();
   }
   while (leftLightValue <= rightLightValue) {
@@ -218,7 +222,7 @@ void trackRightHigh() // function to lift and track if the sun is to the relativ
 void lowerRightPanel()
 {
   magLockSwitch(lock, lock);
-  if (magLockLeftSense == HIGH) {
+  if (magLockLeftSense_pin == HIGH) {
     trackLeftHigh();
   }
   while (leftLightValue <= rightLightValue) {
