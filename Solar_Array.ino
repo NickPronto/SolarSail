@@ -113,8 +113,8 @@ void sensorRead()
   magLockLeftSense = digitalRead(magLockLeftSense_pin);
   ignitionSwitchVal = digitalRead(ignitionSwitch_pin); // ignition or kill switch
   if (ignitionSwitchVal == LOW) { // only works if the ignition is off
-    if (manualToggle = 2) {
-      manualSwitch(wait);
+    if (manualToggle = 2) { //toggle is switched to manual mode.
+      manualSwitch(wait); // waiting on user to press a button. any button.
     }
     else {
       if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
