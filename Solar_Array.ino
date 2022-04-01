@@ -119,7 +119,7 @@ void sensorRead()
   magLockLeftSense = digitalRead(magLockLeftSense_pin);
   ignitionSwitchVal = digitalRead(ignitionSwitch_pin); // ignition or kill switch
   if (manualToggle = 2) {
-    manualSwitch(flat);
+    manualSwitch(wait);
   }
   else {
     if (currentMillis - previousMillis > delayInterval * 60000) {
