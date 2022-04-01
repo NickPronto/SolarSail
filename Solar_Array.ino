@@ -197,7 +197,7 @@ void sensorRead()
   {
     magLockSwitch(lock, unlock);
     LinearActuatorSwitch(up);
-    while (leftLightValue >= rightLightValue) {
+    while (leftLightValue > rightLightValue) {
       sensorRead();
     }
     LinearActuatorSwitch(off);
@@ -208,7 +208,7 @@ void sensorRead()
     if (magLockRightSense == HIGH) {
       trackRightHigh();
     }
-    while (leftLightValue <= rightLightValue) {
+    while (leftLightValue < rightLightValue) {
       LinearActuatorSwitch(down);
     }
     LinearActuatorSwitch(off);
@@ -218,7 +218,7 @@ void sensorRead()
   {
     magLockSwitch(unlock, lock);
     LinearActuatorSwitch(up);
-    while (leftLightValue <= rightLightValue) {
+    while (leftLightValue < rightLightValue) {
       sensorRead();
     }
     LinearActuatorSwitch(off);
@@ -230,7 +230,7 @@ void sensorRead()
     if (magLockLeftSense == HIGH) {
       trackLeftHigh();
     }
-    while (leftLightValue <= rightLightValue) {
+    while (leftLightValue < rightLightValue) {
       LinearActuatorSwitch(down);
     }
     LinearActuatorSwitch(off);
