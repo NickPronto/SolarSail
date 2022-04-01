@@ -194,9 +194,10 @@ void LinearActuatorSwitch(int linearActuatorState) {
 }
 
 void trackLeft() { //function to lift and track if the sun is to the relative left of the panel
+  magLockSwitch(lock, unlock);
   if (magLockRightSense == LOW) {
     while (leftLightValue > rightLightValue) {
-      magLockSwitch(lock, unlock);
+
       LinearActuatorSwitch(up);
     }
     LinearActuatorSwitch(off);
@@ -217,9 +218,10 @@ void lowerLeftPanel() {
 }
 
 void trackRight() {// function to lift and track if the sun is to the relative right of the panel
+  magLockSwitch(unlock, lock);
   if (magLockLeftSense == LOW) {
     while (leftLightValue < rightLightValue) {
-      magLockSwitch(unlock, lock);
+
       LinearActuatorSwitch(up);
     }
     LinearActuatorSwitch(off);
