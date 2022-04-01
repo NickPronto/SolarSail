@@ -130,6 +130,8 @@ void sensorRead()
         layFlat();
       }
     }
+  }
+}
 
     void printOut()
     {
