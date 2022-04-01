@@ -8,7 +8,7 @@ LinearActuator linearActuatorState;
 enum MagLock {lock, unlock};
 MagLock leftState;
 MagLock rightState;
-enum appSignal {left, right, stop, flat};
+enum appSignal {left, right, wait, flat};
 appSignal panelMove;
 
 //variables
@@ -37,7 +37,7 @@ int ignitionSwitchVal;
 unsigned long currentMillis = millis();
 int previousMillis;
 long interval = 10; // Minutes to wait till turning off parasitic MagLocks off at night. Vehicle must be off to disengage.
-//long delayInterval = 1; //minutes to wait till checking/changing angle
+long delayInterval = 1; //minutes to wait till checking/changing angle
 
 
 void setup() {
@@ -63,6 +63,7 @@ void setup() {
 void loop() {
   sensorRead();
   if (ignitionSwitchVal < HIGH) { // only works if the ignition is off
+
     if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
       if (leftLightValue > rightLightValue) {
         trackLeftHigh();
@@ -78,15 +79,15 @@ void loop() {
     layFlat();
   }
 }
-
+}
 //-------Functions below-----------
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
 {
   LinearActuatorSwitch(down);
   magLockSwitch(lock, lock);
   if (currentMillis - previousMillis > (interval * 60000) && ignitionSwitchVal == LOW) { // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
-    previousMillis = currentMillis;
     magLockSwitch(unlock, unlock);
+    previousMillis = currentMillis;
   }
 }
 
@@ -101,7 +102,7 @@ void manualSwitch(int) {
       rightLightValue = 1 + lightSensitivity;
       leftLightValue = 0;
       break;
-    case stop:
+    case wait:
       rightLightValue = leftLightValue;
       break;
     case flat:
@@ -119,114 +120,116 @@ void sensorRead()
     manualSwitch(flat);
   }
   else {
-    LightSensor.SetAddress(Device_Address_H);
-    leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
-    LightSensor.SetAddress(Device_Address_L);
-    rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
+    if (currentMillis - previousMillis > delayInterval * 60000) {
+      LightSensor.SetAddress(Device_Address_H);
+      leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
+      LightSensor.SetAddress(Device_Address_L);
+      rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
+      currentMillis = previousMillis;
+    }
   }
-}
 
-void printOut()
-{
-  Serial.print("Ignition on: ");
-  Serial.println(ignitionSwitchVal);
-  Serial.print("Left light sensor reading: ");
-  Serial.println(leftLightValue);
-  Serial.print("Right light sensor reading: ");
-  Serial.println(rightLightValue);
-  Serial.println();
-  Serial.println();
-}
-
-void magLockSwitch(int leftState, int rightState) {
-  switch (leftState) {
-    case lock:
-      digitalWrite(magLockLeft_pin, HIGH);
-      break;
-    case unlock:
-      digitalWrite(magLockLeft_pin, LOW);
-      break;
-    default:
-      digitalWrite(magLockLeft_pin, HIGH);
-      break;
-
-      switch (rightState) {
-        case lock:
-          digitalWrite(magLockRight_pin, HIGH);
-          break;
-        case unlock:
-          digitalWrite(magLockRight_pin, LOW);
-          break;
-        default:
-          digitalWrite(magLockRight_pin, HIGH);
-          break;
-      }
+  void printOut()
+  {
+    Serial.print("Ignition on: ");
+    Serial.println(ignitionSwitchVal);
+    Serial.print("Left light sensor reading: ");
+    Serial.println(leftLightValue);
+    Serial.print("Right light sensor reading: ");
+    Serial.println(rightLightValue);
+    Serial.println();
+    Serial.println();
   }
-}
 
-void LinearActuatorSwitch(int linearActuatorState) {
-  switch (linearActuatorState) {
-    case up:
-      digitalWrite(linearActuatorRelay1_pin, HIGH);
-      digitalWrite(linearActuatorRelay2_pin, HIGH);
-      break;
+  void magLockSwitch(int, int) {
+    switch (leftState) {
+      case lock:
+        digitalWrite(magLockLeft_pin, HIGH);
+        break;
+      case unlock:
+        digitalWrite(magLockLeft_pin, LOW);
+        break;
+      default:
+        digitalWrite(magLockLeft_pin, HIGH);
+        break;
 
-    case down:
-      digitalWrite(linearActuatorRelay1_pin, LOW);
-      digitalWrite(linearActuatorRelay2_pin, LOW);
-      break;
-
-    case off:
-      digitalWrite(linearActuatorRelay1_pin, HIGH);
-      digitalWrite(linearActuatorRelay2_pin, LOW);
-      break;
-
-    default:
-      digitalWrite(linearActuatorRelay1_pin, HIGH);
-      digitalWrite(linearActuatorRelay2_pin, LOW);
-      break;
+    switch (rightState) {
+      case lock:
+            digitalWrite(magLockRight_pin, HIGH);
+            break;
+      case unlock:
+            digitalWrite(magLockRight_pin, LOW);
+            break;
+      default:
+            digitalWrite(magLockRight_pin, HIGH);
+            break;
+        }
+    }
   }
-}
 
-void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
-{
-  magLockSwitch(lock, unlock);
-  LinearActuatorSwitch(up);
-  while (leftLightValue >= rightLightValue) {
-    sensorRead();
-  }
-  LinearActuatorSwitch(off);
-}
+  void LinearActuatorSwitch(int) {
+    switch (linearActuatorState) {
+      case up:
+        digitalWrite(linearActuatorRelay1_pin, HIGH);
+        digitalWrite(linearActuatorRelay2_pin, HIGH);
+        break;
 
-void lowerLeftPanel() {
-  magLockSwitch(lock, lock);
-  if (magLockRightSense_pin == HIGH) {
-    trackRightHigh();
-  }
-  while (leftLightValue <= rightLightValue) {
-    LinearActuatorSwitch(down);
-  }
-  LinearActuatorSwitch(off);
-}
+      case down:
+        digitalWrite(linearActuatorRelay1_pin, LOW);
+        digitalWrite(linearActuatorRelay2_pin, LOW);
+        break;
 
-void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
-{
-  magLockSwitch(unlock, lock);
-  LinearActuatorSwitch(up);
-  while (leftLightValue <= rightLightValue) {
-    sensorRead();
-  }
-  LinearActuatorSwitch(off);
-}
+      case off:
+        digitalWrite(linearActuatorRelay1_pin, HIGH);
+        digitalWrite(linearActuatorRelay2_pin, LOW);
+        break;
 
-void lowerRightPanel()
-{
-  magLockSwitch(lock, lock);
-  if (magLockLeftSense_pin == HIGH) {
-    trackLeftHigh();
+      default:
+        digitalWrite(linearActuatorRelay1_pin, HIGH);
+        digitalWrite(linearActuatorRelay2_pin, LOW);
+        break;
+    }
   }
-  while (leftLightValue <= rightLightValue) {
-    LinearActuatorSwitch(down);
+
+  void trackLeftHigh() //function to lift and track if the sun is to the relative left of the panel
+  {
+    magLockSwitch(lock, unlock);
+    LinearActuatorSwitch(up);
+    while (leftLightValue >= rightLightValue) {
+      sensorRead();
+    }
+    LinearActuatorSwitch(off);
   }
-  LinearActuatorSwitch(off);
-}
+
+  void lowerLeftPanel() {
+    magLockSwitch(lock, lock);
+    if (magLockRightSense_pin == HIGH) {
+      trackRightHigh();
+    }
+    while (leftLightValue <= rightLightValue) {
+      LinearActuatorSwitch(down);
+    }
+    LinearActuatorSwitch(off);
+  }
+
+  void trackRightHigh() // function to lift and track if the sun is to the relative right of the panel
+  {
+    magLockSwitch(unlock, lock);
+    LinearActuatorSwitch(up);
+    while (leftLightValue <= rightLightValue) {
+      sensorRead();
+    }
+    LinearActuatorSwitch(off);
+  }
+
+  void lowerRightPanel()
+  {
+    magLockSwitch(lock, lock);
+    if (magLockLeftSense_pin == HIGH) {
+      trackLeftHigh();
+    }
+    while (leftLightValue <= rightLightValue) {
+      LinearActuatorSwitch(down);
+    }
+    LinearActuatorSwitch(off);
+  }
