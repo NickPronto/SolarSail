@@ -72,64 +72,65 @@ void loop() {
     }
     currentMillis = previousMillis;
   }
-
-  //-------Functions below-----------
-  void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
-  {
-    LinearActuatorSwitch(down);
-    magLockSwitch(lock, lock);
-    if (currentMillis - previousMillis > (interval * 60000) && ignitionSwitchVal == LOW) { // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
-      magLockSwitch(unlock, unlock);
-      previousMillis = currentMillis;
-    }
-  }
-
-
-  void manualSwitch(int) {
-    switch (panelMove) {
-      case left:
-        leftLightValue = 1 + lightSensitivity;
-        rightLightValue = 0;
-        break;
-      case right:
-        rightLightValue = 1 + lightSensitivity;
-        leftLightValue = 0;
-        break;
-      case wait:
-        rightLightValue = leftLightValue;
-        break;
-      case flat:
-        layFlat();
-        break;
-      default:
-        rightLightValue = leftLightValue;
-        break;
-    }
-  }
-
-  void sensorRead()
-  {
-    magLockRightSense = digitalRead(magLockRightSense_pin);
-    magLockLeftSense = digitalRead(magLockLeftSense_pin);
-    ignitionSwitchVal = digitalRead(ignitionSwitch_pin); // ignition or kill switch
-    if (ignitionSwitchVal == LOW) { // only works if the ignition is off
-      if (manualToggle = 2) { //toggle is switched to manual mode.
-        manualSwitch(wait); // waiting on user to press a button. any button.
-      }
-      else {
-        if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
-          LightSensor.SetAddress(Device_Address_H);
-          leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
-          LightSensor.SetAddress(Device_Address_L);
-          rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
-        }
-      }
-      else {
-        layFlat();
-      }
-    }
+}
+//-------Functions below-----------
+void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
+{
+  LinearActuatorSwitch(down);
+  magLockSwitch(lock, lock);
+  if (currentMillis - previousMillis > (interval * 60000) && ignitionSwitchVal == LOW) { // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
+    magLockSwitch(unlock, unlock);
+    previousMillis = currentMillis;
   }
 }
+
+
+void manualSwitch(int) {
+  switch (panelMove) {
+    case left:
+      leftLightValue = 1 + lightSensitivity;
+      rightLightValue = 0;
+      break;
+    case right:
+      rightLightValue = 1 + lightSensitivity;
+      leftLightValue = 0;
+      break;
+    case wait:
+      rightLightValue = leftLightValue;
+      break;
+    case flat:
+      layFlat();
+      break;
+    default:
+      rightLightValue = leftLightValue;
+      break;
+  }
+}
+
+void sensorRead()
+{
+  magLockRightSense = digitalRead(magLockRightSense_pin);
+  magLockLeftSense = digitalRead(magLockLeftSense_pin);
+  ignitionSwitchVal = digitalRead(ignitionSwitch_pin); // ignition or kill switch
+  if (ignitionSwitchVal == LOW) { // only works if the ignition is off
+    if (manualToggle = 2) { //toggle is switched to manual mode.
+      manualSwitch(wait); // waiting on user to press a button. any button.
+    }
+    else {
+      if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
+        LightSensor.SetAddress(Device_Address_H);
+        leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
+        LightSensor.SetAddress(Device_Address_L);
+        rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
+      }
+    }
+  }
+  else {
+    layFlat();
+  }
+}
+
+
 
 void printOut()
 {
@@ -194,49 +195,49 @@ void LinearActuatorSwitch(int linearActuatorState) {
 }
 
 void trackLeft() { //function to lift and track if the sun is to the relative left of the panel
-  magLockSwitch(lock, unlock);
-  if (magLockRightSense == LOW) {
-    while (leftLightValue > rightLightValue) {
 
+  if (magLockRightSense == HIGH && magLockLeftSense == HIGH) {
+    magLockSwitch(lock, unlock);
+    while (leftLightValue > rightLightValue) {
       LinearActuatorSwitch(up);
     }
     LinearActuatorSwitch(off);
+    magLockSwitch(lock, lock);
   }
-  lowerLeftPanel();
+  else if (magLockRightSense == HIGH && magLockLeftSense == LOW) {
+    lowerLeftPanel();
+  }
 }
 
 void lowerLeftPanel() {
-  magLockSwitch(lock, lock);
-  while (leftLightValue < rightLightValue) {
-    LinearActuatorSwitch(down);
-  }
-  LinearActuatorSwitch(off);
-  if (magLockRightSense == HIGH) {
-    trackRight();
-  }
 
-}
-
-void trackRight() {// function to lift and track if the sun is to the relative right of the panel
-  magLockSwitch(unlock, lock);
-  if (magLockLeftSense == LOW) {
-    while (leftLightValue < rightLightValue) {
-
-      LinearActuatorSwitch(up);
-    }
-    LinearActuatorSwitch(off);
-  }
-  lowerRightPanel();
-}
-
-void lowerRightPanel() {
-  magLockSwitch(lock, lock);
   while (leftLightValue > rightLightValue) {
     LinearActuatorSwitch(down);
   }
   LinearActuatorSwitch(off);
-  if (magLockLeftSense == HIGH) {
-    trackRight();
+
+}
+
+void trackRight() {// function to lift and track if the sun is to the relative right of the panel
+
+  if (magLockRightSense == HIGH && magLockLeftSense == HIGH) {
+    magLockSwitch(unlock, lock);
+    while (leftLightValue < rightLightValue) {
+      LinearActuatorSwitch(up);
+    }
+    LinearActuatorSwitch(off);
+    magLockSwitch(lock, lock);
   }
+  else if (magLockRightSense == LOW && magLockLeftSense == HIGH) {
+    lowerRightPanel();
+  }
+}
+
+void lowerRightPanel() {
+
+  while (leftLightValue < rightLightValue) {
+    LinearActuatorSwitch(down);
+  }
+  LinearActuatorSwitch(off);
 
 }
