@@ -31,7 +31,8 @@ const int magLockRight_pin = 17; // solenoid control 12v relay right hinge
 // Values
 uint16_t leftLightValue;
 uint16_t rightLightValue;
-
+int magLockRightSense;
+int magLockLeftSense;
 
 int ignitionSwitchVal;
 unsigned long currentMillis = millis();
@@ -63,7 +64,6 @@ void setup() {
 void loop() {
   sensorRead();
   if (ignitionSwitchVal < HIGH) { // only works if the ignition is off
-
     if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
       if (leftLightValue > rightLightValue) {
         trackLeftHigh();
@@ -79,7 +79,7 @@ void loop() {
     layFlat();
   }
 }
-}
+
 //-------Functions below-----------
 void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
 {
@@ -115,6 +115,8 @@ void manualSwitch(int) {
 
 void sensorRead()
 {
+  magLockRightSense = digitalRead(magLockRightSense_pin);
+  magLockLeftSense = digitalRead(magLockLeftSense_pin);
   ignitionSwitchVal = digitalRead(ignitionSwitch_pin); // ignition or kill switch
   if (manualToggle = 2) {
     manualSwitch(flat);
@@ -128,7 +130,7 @@ void sensorRead()
       currentMillis = previousMillis;
     }
   }
-
+}
   void printOut()
   {
     Serial.print("Ignition on: ");
@@ -152,7 +154,7 @@ void sensorRead()
       default:
         digitalWrite(magLockLeft_pin, HIGH);
         break;
-
+    }
     switch (rightState) {
       case lock:
             digitalWrite(magLockRight_pin, HIGH);
@@ -164,7 +166,7 @@ void sensorRead()
             digitalWrite(magLockRight_pin, HIGH);
             break;
         }
-    }
+    
   }
 
   void LinearActuatorSwitch(int) {
@@ -203,7 +205,7 @@ void sensorRead()
 
   void lowerLeftPanel() {
     magLockSwitch(lock, lock);
-    if (magLockRightSense_pin == HIGH) {
+    if (magLockRightSense == HIGH) {
       trackRightHigh();
     }
     while (leftLightValue <= rightLightValue) {
@@ -225,7 +227,7 @@ void sensorRead()
   void lowerRightPanel()
   {
     magLockSwitch(lock, lock);
-    if (magLockLeftSense_pin == HIGH) {
+    if (magLockLeftSense == HIGH) {
       trackLeftHigh();
     }
     while (leftLightValue <= rightLightValue) {
