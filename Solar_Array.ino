@@ -109,7 +109,8 @@ void manualSwitch(int) {
       layFlat();
       break;
     default:
-      layFlat();
+      rightLightValue = leftLightValue;
+      break;
   }
 }
 
