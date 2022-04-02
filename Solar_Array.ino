@@ -63,10 +63,6 @@ void setup() {
 
 void loop() {
   sensorRead();
-  if (magLockLeftSense == LOW && magLockRightSense == LOW) {
-    layFlat();
-  }
-  else {
     if (currentMillis - previousMillis > delayInterval * 60000) {
       if (leftLightValue > rightLightValue) {
         trackLeft();
@@ -81,9 +77,9 @@ void loop() {
   //-------Functions below-----------
   void layFlat() // function to drop the panel to its lowest point and lock both hinge solenoids in place for travel.
   {
-    LinearActuatorSwitch(down);
     magLockSwitch(lock, lock);
-    if (currentMillis - previousMillis > (interval * 60000) && ignitionSwitchVal == LOW) { // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
+    LinearActuatorSwitch(down);
+    if (currentMillis - previousMillis > (interval * 60000) && ignitionSwitchVal == LOW && magLockLeftSense == HIGH && magLockRightSense == HIGH) { // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
       magLockSwitch(unlock, unlock);
       previousMillis = currentMillis;
     }
