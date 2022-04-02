@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
+import 'package:solar_sail/components/bluetooth/bluetooth.dart';
+
+SolarBluetooth solarBluetooth = SolarBluetooth();
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -14,26 +17,14 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   bool _manualOn = false;
+  bool _isConnected = false;
+  int _alpha = 255;
 
-  BleManager bleManager = BleManager();
+  static const String DEVICENAME = "SOLARSAIL";
 
-  void startBLE() async {
-    await bleManager.createClient();
-    bleManager.enableRadio();
-    BluetoothState currentState = await bleManager.bluetoothState();
-    bleManager.observeBluetoothState().listen((event) {
-      print(event);
-
-      if (event == BluetoothState.POWERED_ON) {
-        bleManager.startPeripheralScan().listen((scanResult) {
-          //Scan one peripheral and stop scanning
-          print(
-              "Scanned Peripheral ${scanResult.peripheral.name}, RSSI ${scanResult.rssi}");
-          bleManager.stopPeripheralScan();
-        });
-      }
-    });
-  }
+  static const String serviceUuid = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+  static const String characteristicUuid =
+      "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +77,12 @@ class _BodyState extends State<Body> {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white,
-          border: Border.all(width: 2, color: Colors.grey)),
+          color: Color.fromARGB(_manualOn ? 50 : 255, 255, 255, 255),
+          border: Border.all(
+              width: 2,
+              color: Color.fromARGB(_manualOn ? 50 : 255, 65, 65, 65))),
       child: IconButton(
-        color: Colors.black,
+        color: Color.fromARGB(_manualOn ? 50 : 255, 0, 0, 0),
         icon: icon,
         onPressed: () {
           print("Pressed button");
@@ -149,15 +142,18 @@ class _BodyState extends State<Body> {
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.all(30),
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: Color.fromARGB(255, 40, 122, 169),
-      ),
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: _isConnected
+              ? Color.fromARGB(255, 40, 122, 169)
+              : Color.fromARGB(255, 175, 60, 60)),
       child: IconButton(
         color: Colors.white,
-        icon: const Icon(Icons.bluetooth),
+        icon: _isConnected
+            ? Icon(Icons.bluetooth)
+            : Icon(Icons.bluetooth_disabled),
         onPressed: () {
-          startBLE();
+          solarBluetooth.beginBLE();
         },
         iconSize: 40,
       ),
