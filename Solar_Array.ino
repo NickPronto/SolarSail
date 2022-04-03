@@ -81,7 +81,7 @@ void layFlat() // function to drop the panel to its lowest point and lock both h
   LinearActuatorSwitch(down);
   if (currentMillis - previousMillis > (interval * 60000) && ignitionSwitchVal == LOW && magLockLeftSense == HIGH && magLockRightSense == HIGH) { // turn off parasitic drain from MagLocks on batteries at night when panels are lowered.
     magLockSwitch(unlock, unlock);
-    while (ignitionSwitchVal == LOW || leftLightValue + rightLightValue > lightSensitivity || manualToggle == 2) {
+    while (ignitionSwitchVal == LOW && leftLightValue + rightLightValue < lightSensitivity && manualToggle == 1) {
       sensorRead();
     }
     previousMillis = currentMillis;
