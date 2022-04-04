@@ -63,8 +63,8 @@ void setup() {
 
 void loop() {
   sensorRead();
-  if (manualToggle = 1) {
-    if (currentMillis - previousMillis > delayInterval * 60000) {
+  if (manualToggle = 1 && leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight and in automatic mode)
+    if (currentMillis - previousMillis > delayInterval * 60000) { // delay timer
       if (leftLightValue > rightLightValue) {
         trackLeft();
       }
@@ -74,7 +74,7 @@ void loop() {
       currentMillis = previousMillis;
     }
   }
-  else {
+  else if (manualToggle = 2) {
     if (leftLightValue > rightLightValue) {
       trackLeft();
     }
@@ -84,9 +84,9 @@ void loop() {
     else if (rightLightValue = leftLightValue) {
       pause();
     }
-else {
-  layFlat();
-}
+    else {
+      layFlat();
+    }
   }
 }
 
@@ -140,31 +140,28 @@ void sensorRead()
     layFlat();
   }
   if (manualToggle = 1) {
-    if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
-      LightSensor.SetAddress(Device_Address_H);
-      leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
-      LightSensor.SetAddress(Device_Address_L);
-      rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
-    }
+    LightSensor.SetAddress(Device_Address_H);
+    leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
+    LightSensor.SetAddress(Device_Address_L);
+    rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
 
   }
-
+  else if (manualToggle = 2) {
+    manualSwitch(panelMove);
+  }
 }
 
-
-
-
-void printOut()
-{
-  Serial.print("Ignition on: ");
-  Serial.println(ignitionSwitchVal);
-  Serial.print("Left light sensor reading: ");
-  Serial.println(leftLightValue);
-  Serial.print("Right light sensor reading: ");
-  Serial.println(rightLightValue);
-  Serial.println();
-  Serial.println();
-}
+//void printOut()
+//{
+//  Serial.print("Ignition on: ");
+//  Serial.println(ignitionSwitchVal);
+//  Serial.print("Left light sensor reading: ");
+//  Serial.println(leftLightValue);
+//  Serial.print("Right light sensor reading: ");
+//  Serial.println(rightLightValue);
+//  Serial.println();
+//  Serial.println();
+//}
 
 void magLockSwitch(int leftState, int rightState) {
   switch (leftState) {
