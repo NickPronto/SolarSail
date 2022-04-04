@@ -100,6 +100,8 @@ void manualSwitch(int) {
       leftLightValue = 0;
       break;
     case wait:
+      rightLightValue = lightSensitivity;
+      leftLightValue = lightSensitivity;
       rightLightValue = leftLightValue;
       break;
     case flat:
