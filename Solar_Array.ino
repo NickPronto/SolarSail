@@ -108,6 +108,8 @@ void manualSwitch(int) {
       layFlat();
       break;
     default:
+      rightLightValue = lightSensitivity;
+      leftLightValue = lightSensitivity;
       rightLightValue = leftLightValue;
       break;
   }
