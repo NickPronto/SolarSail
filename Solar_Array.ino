@@ -82,11 +82,11 @@ void loop() {
       trackRight();
     }
     else if (rightLightValue = leftLightValue) {
-      wait();
+      pause();
     }
-    else {
-      layflat();
-    }
+else {
+  layFlat();
+}
   }
 }
 
@@ -139,23 +139,18 @@ void sensorRead()
   while (magLockLeftSense == LOW && magLockRightSense == LOW) { //if mag sensors report both low, the panels have become disconnected and need to be brought down.
     layFlat();
   }
-  if (ignitionSwitchVal == LOW) { // only works if the ignition is off
-    while (manualToggle = 2) { //toggle is switched to manual mode.
-      manualSwitch(wait); // waiting on user to press a button. any button.
+  if (manualToggle = 1) {
+    if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
+      LightSensor.SetAddress(Device_Address_H);
+      leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
+      LightSensor.SetAddress(Device_Address_L);
+      rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
     }
-  }
-  if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
-    LightSensor.SetAddress(Device_Address_H);
-    leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
-    LightSensor.SetAddress(Device_Address_L);
-    rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
+
   }
 
-
-  else {
-    layFlat();
-  }
 }
+
 
 
 
@@ -221,7 +216,7 @@ void LinearActuatorSwitch(int linearActuatorState) {
   }
 }
 
-void wait() {
+void pause() {
   magLockSwitch(lock, lock);
   LinearActuatorSwitch(off);
 }
