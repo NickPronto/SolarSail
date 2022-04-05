@@ -1,0 +1,170 @@
+com/polidea/flutter_ble_lib/converter/SingleCharacteristicResponseJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.SingleCharacteristicResponseJsonConverter
+ com.polidea.flutter_ble_lib.converter.SingleCharacteristicResponseJsonConverter$Metadata
+com/polidea/flutter_ble_lib/converter/CharacteristicJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.CharacteristicJsonConverter
+ com.polidea.flutter_ble_lib.converter.CharacteristicJsonConverter$Metadata
+com/polidea/flutter_ble_lib/event/ScanningStreamHandler.java
+ com.polidea.flutter_ble_lib.event.ScanningStreamHandler
+com/polidea/flutter_ble_lib/BuildConfig.java
+ com.polidea.flutter_ble_lib.BuildConfig
+com/polidea/flutter_ble_lib/converter/MultiDescriptorsResponseJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.MultiDescriptorsResponseJsonConverter
+ com.polidea.flutter_ble_lib.converter.MultiDescriptorsResponseJsonConverter$Metadata
+com/polidea/flutter_ble_lib/converter/JsonConverter.java
+ com.polidea.flutter_ble_lib.converter.JsonConverter
+com/polidea/flutter_ble_lib/converter/ServiceJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.ServiceJsonConverter
+ com.polidea.flutter_ble_lib.converter.ServiceJsonConverter$Metadata
+com/polidea/flutter_ble_lib/SafeMainThreadResolver.java
+ com.polidea.flutter_ble_lib.SafeMainThreadResolver
+ com.polidea.flutter_ble_lib.SafeMainThreadResolver$1
+ com.polidea.flutter_ble_lib.SafeMainThreadResolver$2
+com/polidea/flutter_ble_lib/ConnectionStateChange.java
+ com.polidea.flutter_ble_lib.ConnectionStateChange
+com/polidea/flutter_ble_lib/delegate/CallDelegate.java
+ com.polidea.flutter_ble_lib.delegate.CallDelegate
+com/polidea/flutter_ble_lib/SingleCharacteristicResponse.java
+ com.polidea.flutter_ble_lib.SingleCharacteristicResponse
+com/polidea/flutter_ble_lib/converter/MultiCharacteristicsResponseJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.MultiCharacteristicsResponseJsonConverter
+ com.polidea.flutter_ble_lib.converter.MultiCharacteristicsResponseJsonConverter$Metadata
+com/polidea/flutter_ble_lib/event/RestoreStateStreamHandler.java
+ com.polidea.flutter_ble_lib.event.RestoreStateStreamHandler
+com/polidea/flutter_ble_lib/BleErrorFactory.java
+ com.polidea.flutter_ble_lib.BleErrorFactory
+com/polidea/flutter_ble_lib/converter/BleErrorJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.BleErrorJsonConverter
+ com.polidea.flutter_ble_lib.converter.BleErrorJsonConverter$Metadata
+com/polidea/flutter_ble_lib/delegate/DiscoveryDelegate.java
+ com.polidea.flutter_ble_lib.delegate.DiscoveryDelegate
+ com.polidea.flutter_ble_lib.delegate.DiscoveryDelegate$1
+ com.polidea.flutter_ble_lib.delegate.DiscoveryDelegate$2
+ com.polidea.flutter_ble_lib.delegate.DiscoveryDelegate$3
+ com.polidea.flutter_ble_lib.delegate.DiscoveryDelegate$4
+com/polidea/flutter_ble_lib/constant/MethodName.java
+ com.polidea.flutter_ble_lib.constant.MethodName
+com/polidea/flutter_ble_lib/event/CharacteristicsMonitorStreamHandler.java
+ com.polidea.flutter_ble_lib.event.CharacteristicsMonitorStreamHandler
+com/polidea/flutter_ble_lib/delegate/BluetoothStateDelegate.java
+ com.polidea.flutter_ble_lib.delegate.BluetoothStateDelegate
+ com.polidea.flutter_ble_lib.delegate.BluetoothStateDelegate$1
+ com.polidea.flutter_ble_lib.delegate.BluetoothStateDelegate$2
+ com.polidea.flutter_ble_lib.delegate.BluetoothStateDelegate$3
+ com.polidea.flutter_ble_lib.delegate.BluetoothStateDelegate$4
+com/polidea/flutter_ble_lib/event/AdapterStateStreamHandler.java
+ com.polidea.flutter_ble_lib.event.AdapterStateStreamHandler
+com/polidea/flutter_ble_lib/converter/DevicesResultJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.DevicesResultJsonConverter
+ com.polidea.flutter_ble_lib.converter.DevicesResultJsonConverter$Metadata
+com/polidea/flutter_ble_lib/delegate/CharacteristicsDelegate.java
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$1
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$10
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$11
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$12
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$13
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$14
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$15
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$16
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$17
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$18
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$19
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$2
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$20
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$21
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$22
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$23
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$24
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$25
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$25$1
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$26
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$26$1
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$27
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$27$1
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$28
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$28$1
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$29
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$29$1
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$3
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$30
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$30$1
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$4
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$5
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$6
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$7
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$8
+ com.polidea.flutter_ble_lib.delegate.CharacteristicsDelegate$9
+com/polidea/flutter_ble_lib/constant/ChannelName.java
+ com.polidea.flutter_ble_lib.constant.ChannelName
+com/polidea/flutter_ble_lib/FlutterBleLibPlugin.java
+ com.polidea.flutter_ble_lib.FlutterBleLibPlugin
+ com.polidea.flutter_ble_lib.FlutterBleLibPlugin$1
+ com.polidea.flutter_ble_lib.FlutterBleLibPlugin$2
+ com.polidea.flutter_ble_lib.FlutterBleLibPlugin$3
+ com.polidea.flutter_ble_lib.FlutterBleLibPlugin$4
+com/polidea/flutter_ble_lib/delegate/RssiDelegate.java
+ com.polidea.flutter_ble_lib.delegate.RssiDelegate
+ com.polidea.flutter_ble_lib.delegate.RssiDelegate$1
+ com.polidea.flutter_ble_lib.delegate.RssiDelegate$2
+ com.polidea.flutter_ble_lib.delegate.RssiDelegate$3
+ com.polidea.flutter_ble_lib.delegate.RssiDelegate$4
+com/polidea/flutter_ble_lib/event/ConnectionStateStreamHandler.java
+ com.polidea.flutter_ble_lib.event.ConnectionStateStreamHandler
+ com.polidea.flutter_ble_lib.event.ConnectionStateStreamHandler$1
+com/polidea/flutter_ble_lib/converter/DescriptorJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.DescriptorJsonConverter
+ com.polidea.flutter_ble_lib.converter.DescriptorJsonConverter$Metadata
+com/polidea/flutter_ble_lib/converter/ScanResultJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.ScanResultJsonConverter
+ com.polidea.flutter_ble_lib.converter.ScanResultJsonConverter$Metadata
+com/polidea/flutter_ble_lib/constant/ArgumentKey.java
+ com.polidea.flutter_ble_lib.constant.ArgumentKey
+com/polidea/flutter_ble_lib/delegate/DeviceConnectionDelegate.java
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$1
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$10
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$11
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$12
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$13
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$14
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$15
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$16
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$17
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$2
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$3
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$4
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$5
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$6
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$7
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$8
+ com.polidea.flutter_ble_lib.delegate.DeviceConnectionDelegate$9
+com/polidea/flutter_ble_lib/delegate/MtuDelegate.java
+ com.polidea.flutter_ble_lib.delegate.MtuDelegate
+ com.polidea.flutter_ble_lib.delegate.MtuDelegate$1
+ com.polidea.flutter_ble_lib.delegate.MtuDelegate$2
+ com.polidea.flutter_ble_lib.delegate.MtuDelegate$3
+ com.polidea.flutter_ble_lib.delegate.MtuDelegate$4
+com/polidea/flutter_ble_lib/delegate/DevicesDelegate.java
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate$1
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate$2
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate$3
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate$4
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate$5
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate$6
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate$7
+ com.polidea.flutter_ble_lib.delegate.DevicesDelegate$8
+com/polidea/flutter_ble_lib/delegate/LogLevelDelegate.java
+ com.polidea.flutter_ble_lib.delegate.LogLevelDelegate
+com/polidea/flutter_ble_lib/CharacteristicsResponse.java
+ com.polidea.flutter_ble_lib.CharacteristicsResponse
+com/polidea/flutter_ble_lib/MultiCharacteristicsResponse.java
+ com.polidea.flutter_ble_lib.MultiCharacteristicsResponse
+com/polidea/flutter_ble_lib/converter/ConnectionStateChangeJsonConverter.java
+ com.polidea.flutter_ble_lib.converter.ConnectionStateChangeJsonConverter
+ com.polidea.flutter_ble_lib.converter.ConnectionStateChangeJsonConverter$Metadata
+com/polidea/flutter_ble_lib/delegate/DescriptorsDelegate.java
+ com.polidea.flutter_ble_lib.delegate.DescriptorsDelegate
+ com.polidea.flutter_ble_lib.delegate.DescriptorsDelegate$1
+ com.polidea.flutter_ble_lib.delegate.DescriptorsDelegate$2
