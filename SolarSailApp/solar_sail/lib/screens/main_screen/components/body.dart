@@ -7,8 +7,6 @@ import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:provider/provider.dart';
 import 'package:solar_sail/components/bluetooth/bluetooth.dart';
 
-SolarBluetooth solarBluetooth = SolarBluetooth();
-
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
 
@@ -27,6 +25,26 @@ class _BodyState extends State<Body> {
   static const String characteristicUuid =
       "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
+  bool getBluetoothState(BuildContext context) {
+    BluetoothProvider _bluetoothProvider =
+        Provider.of<BluetoothProvider>(context, listen: false);
+
+    _bluetoothProvider.isBluetoothOn();
+
+    print(_bluetoothProvider.isBluetoothOn().toString());
+
+    return _bluetoothProvider.getBluetoothState == BluetoothState.POWERED_ON;
+  }
+
+  bool connectToDevice(BuildContext context) {
+    BluetoothProvider _bluetoothProvider =
+        Provider.of<BluetoothProvider>(context, listen: false);
+
+    _bluetoothProvider.connectToPeripheral();
+
+    return _bluetoothProvider.getPeripheralConnected;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,10 +53,7 @@ class _BodyState extends State<Body> {
           height: MediaQuery.of(context).size.height * 0.05,
         ),
         Center(
-          /* child: bluetoothButton() */ child:
-              Consumer<BluetoothProvider>(builder: (context, value, child) {
-            return bluetoothButton(value.bleManager);
-          }),
+          child: bluetoothButton(),
         ),
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.05,
@@ -142,23 +157,22 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Container bluetoothButton(BleManager ble) {
+  Container bluetoothButton() {
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: _isConnected
+          color: getBluetoothState(context)
               ? Color.fromARGB(255, 40, 122, 169)
               : Color.fromARGB(255, 175, 60, 60)),
       child: IconButton(
         color: Colors.white,
-        icon: ble.bluetoothState() == BluetoothState.POWERED_ON
-            ? Icon(Icons.bluetooth)
-            : Icon(Icons.bluetooth_disabled),
+        icon: false ? Icon(Icons.bluetooth) : Icon(Icons.bluetooth_disabled),
         onPressed: () {
           //solarBluetooth.beginBLE();
-          Provider.of<BluetoothProvider>(context, listen: false).beginBLE();
+          getBluetoothState(context);
+          connectToDevice(context);
         },
         iconSize: 40,
       ),

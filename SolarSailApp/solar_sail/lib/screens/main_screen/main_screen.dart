@@ -8,12 +8,9 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<BluetoothProvider>(
-      create: (BuildContext context) => BluetoothProvider(),
-      child: Scaffold(
-        body: Body(),
-        backgroundColor: Color.fromARGB(255, 229, 229, 229),
-      ),
+    return Scaffold(
+      body: Body(),
+      backgroundColor: Color.fromARGB(255, 229, 229, 229),
     );
 
     /* return Scaffold(
