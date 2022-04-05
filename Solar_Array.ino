@@ -37,7 +37,7 @@ int magLockLeftSense;
 int ignitionSwitchVal;
 unsigned long currentMillis = millis();
 int previousMillis;
-long interval = 10; // Minutes to wait till turning off parasitic MagLocks off at night. Vehicle must be off to disengage.
+long interval = 2; // Minutes to wait till turning off parasitic MagLocks off at night. Vehicle must be off to disengage.
 long delayInterval = 1; //minutes to wait till checking/changing angle
 
 
@@ -63,14 +63,30 @@ void setup() {
 
 void loop() {
   sensorRead();
-  if (currentMillis - previousMillis > delayInterval * 60000) {
+  if (manualToggle = 1 && leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight and in automatic mode)
+    if (currentMillis - previousMillis > delayInterval * 60000) { // delay timer
+      if (leftLightValue > rightLightValue) {
+        trackLeft();
+      }
+      else if (leftLightValue < rightLightValue) {
+        trackRight();
+      }
+      currentMillis = previousMillis;
+    }
+  }
+  else if (manualToggle = 2) {
     if (leftLightValue > rightLightValue) {
       trackLeft();
     }
-    else {
+    else if (leftLightValue < rightLightValue) {
       trackRight();
     }
-    currentMillis = previousMillis;
+    else if (rightLightValue = leftLightValue) {
+      pause();
+    }
+    else {
+      layFlat();
+    }
   }
 }
 
@@ -120,40 +136,32 @@ void sensorRead()
   magLockRightSense = digitalRead(magLockRightSense_pin);
   magLockLeftSense = digitalRead(magLockLeftSense_pin);
   ignitionSwitchVal = digitalRead(ignitionSwitch_pin); // ignition or kill switch
-  while (magLockLeftSense == LOW && magLockRightSense == LOW) {
+  while (magLockLeftSense == LOW && magLockRightSense == LOW) { //if mag sensors report both low, the panels have become disconnected and need to be brought down.
     layFlat();
   }
-  if (ignitionSwitchVal == LOW) { // only works if the ignition is off
-    if (manualToggle = 2) { //toggle is switched to manual mode.
-      manualSwitch(wait); // waiting on user to press a button. any button.
-    }
-    else {
-      if (leftLightValue + rightLightValue > lightSensitivity) { //only works if there is sunlight
-        LightSensor.SetAddress(Device_Address_H);
-        leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
-        LightSensor.SetAddress(Device_Address_L);
-        rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
-      }
-    }
+  if (manualToggle = 1) {
+    LightSensor.SetAddress(Device_Address_H);
+    leftLightValue = LightSensor.GetLightIntensity();// Get Lux value left
+    LightSensor.SetAddress(Device_Address_L);
+    rightLightValue = LightSensor.GetLightIntensity();// Get Lux value right
+
   }
-  else {
-    layFlat();
+  else if (manualToggle = 2) {
+    manualSwitch(panelMove);
   }
 }
 
-
-
-void printOut()
-{
-  Serial.print("Ignition on: ");
-  Serial.println(ignitionSwitchVal);
-  Serial.print("Left light sensor reading: ");
-  Serial.println(leftLightValue);
-  Serial.print("Right light sensor reading: ");
-  Serial.println(rightLightValue);
-  Serial.println();
-  Serial.println();
-}
+//void printOut()
+//{
+//  Serial.print("Ignition on: ");
+//  Serial.println(ignitionSwitchVal);
+//  Serial.print("Left light sensor reading: ");
+//  Serial.println(leftLightValue);
+//  Serial.print("Right light sensor reading: ");
+//  Serial.println(rightLightValue);
+//  Serial.println();
+//  Serial.println();
+//}
 
 void magLockSwitch(int leftState, int rightState) {
   switch (leftState) {
@@ -203,6 +211,11 @@ void LinearActuatorSwitch(int linearActuatorState) {
       digitalWrite(linearActuatorRelay2_pin, LOW);
       break;
   }
+}
+
+void pause() {
+  magLockSwitch(lock, lock);
+  LinearActuatorSwitch(off);
 }
 
 void trackLeft() { //function to lift and track if the sun is to the relative left of the panel
