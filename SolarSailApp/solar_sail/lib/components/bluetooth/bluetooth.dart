@@ -84,3 +84,22 @@ class SolarBluetooth {
     print(characteristic);
   }
 }
+
+class BluetoothProvider extends ChangeNotifier {
+  final BleManager bleManager = BleManager();
+
+  Future<BluetoothState> _getBluetoothState() async {
+    return await bleManager.bluetoothState();
+  }
+
+  void beginBLE() async {
+    print("Start BLE");
+
+    if (_getBluetoothState() != BluetoothState.POWERED_ON) {
+      await bleManager.createClient();
+      bleManager.enableRadio();
+    }
+
+    notifyListeners();
+  }
+}

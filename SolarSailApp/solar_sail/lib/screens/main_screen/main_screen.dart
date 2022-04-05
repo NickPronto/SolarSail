@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:solar_sail/components/bluetooth/bluetooth.dart';
 import 'package:solar_sail/screens/main_screen/components/body.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<BluetoothProvider>(
+      create: (BuildContext context) => BluetoothProvider(),
+      child: Scaffold(
+        body: Body(),
+        backgroundColor: Color.fromARGB(255, 229, 229, 229),
+      ),
+    );
+
+    /* return Scaffold(
       body: Body(),
       backgroundColor: Color.fromARGB(255, 229, 229, 229),
-    );
+    ); */
   }
 }

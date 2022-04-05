@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
+import 'package:provider/provider.dart';
 import 'package:solar_sail/components/bluetooth/bluetooth.dart';
 
 SolarBluetooth solarBluetooth = SolarBluetooth();
@@ -34,7 +35,10 @@ class _BodyState extends State<Body> {
           height: MediaQuery.of(context).size.height * 0.05,
         ),
         Center(
-          child: bluetoothButton(),
+          /* child: bluetoothButton() */ child:
+              Consumer<BluetoothProvider>(builder: (context, value, child) {
+            return bluetoothButton(value.bleManager);
+          }),
         ),
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.05,
@@ -138,7 +142,7 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Container bluetoothButton() {
+  Container bluetoothButton(BleManager ble) {
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.all(30),
@@ -149,11 +153,12 @@ class _BodyState extends State<Body> {
               : Color.fromARGB(255, 175, 60, 60)),
       child: IconButton(
         color: Colors.white,
-        icon: _isConnected
+        icon: ble.bluetoothState() == BluetoothState.POWERED_ON
             ? Icon(Icons.bluetooth)
             : Icon(Icons.bluetooth_disabled),
         onPressed: () {
-          solarBluetooth.beginBLE();
+          //solarBluetooth.beginBLE();
+          Provider.of<BluetoothProvider>(context, listen: false).beginBLE();
         },
         iconSize: 40,
       ),
