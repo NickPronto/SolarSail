@@ -1,28 +1,32 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_ble_lib (2.3.2):
+  - Protobuf (3.20.0)
+  - reactive_ble_mobile (0.0.1):
     - Flutter
-    - MultiplatformBleAdapter (~> 0.1.8)
-  - MultiplatformBleAdapter (0.1.9)
+    - Protobuf (~> 3.5)
+    - SwiftProtobuf (~> 1.0)
+  - SwiftProtobuf (1.19.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_ble_lib (from `.symlinks/plugins/flutter_ble_lib/ios`)
+  - reactive_ble_mobile (from `.symlinks/plugins/reactive_ble_mobile/ios`)
 
 SPEC REPOS:
   trunk:
-    - MultiplatformBleAdapter
+    - Protobuf
+    - SwiftProtobuf
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  flutter_ble_lib:
-    :path: ".symlinks/plugins/flutter_ble_lib/ios"
+  reactive_ble_mobile:
+    :path: ".symlinks/plugins/reactive_ble_mobile/ios"
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_ble_lib: 675f6ceaa6cd6a675bba408b705042458a782101
-  MultiplatformBleAdapter: 5a6a897b006764392f9cef785e4360f54fb9477d
+  Protobuf: 66e2f3b26a35e4cc379831f4ced538274ee4b923
+  reactive_ble_mobile: 9ce6723d37ccf701dbffd202d487f23f5de03b4c
+  SwiftProtobuf: 6ef3f0e422ef90d6605ca20b21a94f6c1324d6b3
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 

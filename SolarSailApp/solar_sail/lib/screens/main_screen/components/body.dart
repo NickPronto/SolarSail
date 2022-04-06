@@ -1,9 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:provider/provider.dart';
 import 'package:solar_sail/components/bluetooth/bluetooth.dart';
 
@@ -25,25 +25,7 @@ class _BodyState extends State<Body> {
   static const String characteristicUuid =
       "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
-  bool getBluetoothState(BuildContext context) {
-    BluetoothProvider _bluetoothProvider =
-        Provider.of<BluetoothProvider>(context, listen: false);
-
-    _bluetoothProvider.isBluetoothOn();
-
-    print(_bluetoothProvider.isBluetoothOn().toString());
-
-    return _bluetoothProvider.getBluetoothState == BluetoothState.POWERED_ON;
-  }
-
-  bool connectToDevice(BuildContext context) {
-    BluetoothProvider _bluetoothProvider =
-        Provider.of<BluetoothProvider>(context, listen: false);
-
-    _bluetoothProvider.connectToPeripheral();
-
-    return _bluetoothProvider.getPeripheralConnected;
-  }
+  final _ble = FlutterReactiveBle();
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +87,7 @@ class _BodyState extends State<Body> {
         icon: icon,
         onPressed: () {
           print("Pressed button");
+          // _ble.writeCharacteristicWithoutResponse(QualifiedCharacteristic(characteristicId: Uuid.parse(characteristicUuid), serviceId: Uuid.parse(serviceUuid), deviceId: deviceId), value: 1);
         },
         iconSize: 40,
       ),
@@ -163,7 +146,7 @@ class _BodyState extends State<Body> {
       padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: getBluetoothState(context)
+          color: false
               ? Color.fromARGB(255, 40, 122, 169)
               : Color.fromARGB(255, 175, 60, 60)),
       child: IconButton(
@@ -171,8 +154,12 @@ class _BodyState extends State<Body> {
         icon: false ? Icon(Icons.bluetooth) : Icon(Icons.bluetooth_disabled),
         onPressed: () {
           //solarBluetooth.beginBLE();
-          getBluetoothState(context);
-          connectToDevice(context);
+
+          _ble.scanForDevices(withServices: [Uuid.parse(serviceUuid)]).listen(
+              (device) {
+            print(device.id);
+            // _ble.connectToDevice(id: device.id).listen((connectionState) {});
+          });
         },
         iconSize: 40,
       ),
