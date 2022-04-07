@@ -14,23 +14,62 @@
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
+#define GPIO_PIN 8
+
+
+int i = 0;
+
+// BLE SETUP
+
+BLEServer *pServer;
+BLEService *pService;
+BLECharacteristic *pCharacteristicMode;
+
+class MyCallbacks: public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pCharacteristicMode) {
+      std::string value = pCharacteristicMode->getValue();
+      int intValue = value[0] - '0';
+      if (value.length() > 0) {
+        Serial.println("*********");
+        Serial.print("New value: ");
+        for (int i = 0; i < value.length(); i++)
+          Serial.print(value[i]);
+        
+        Serial.println();
+        Serial.println("*********");
+        if(intValue){
+          Serial.println("Turn on LED!");
+          digitalWrite(GPIO_PIN, HIGH);
+        } else {
+          Serial.println("Turn off LED!");
+          digitalWrite(GPIO_PIN, LOW);
+        }
+      }
+    }
+};
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting BLE work!");
 
-  BLEDevice::init("SolarSailESP32");
-  BLEServer *pServer = BLEDevice::createServer();
-  BLEService *pService = pServer->createService(SERVICE_UUID);
-  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
-                                         CHARACTERISTIC_UUID,
-                                         BLECharacteristic::PROPERTY_READ |
-                                         BLECharacteristic::PROPERTY_WRITE
-                                       );
+  pinMode(GPIO_PIN, OUTPUT);
 
-  pCharacteristic->setValue("Hello World says Neil");
+  BLEDevice::init("SOLARSAIL");
+  pServer = BLEDevice::createServer();
+  pService = pServer->createService(SERVICE_UUID);
+  pCharacteristicMode = pService->createCharacteristic(
+                                       CHARACTERISTIC_UUID,
+                                       BLECharacteristic::PROPERTY_READ |
+                                       BLECharacteristic::PROPERTY_WRITE
+                                     );
+
+  pCharacteristicMode->setCallbacks(new MyCallbacks());
+  
+  pCharacteristicMode->setValue(i);
   pService->start();
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
   pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
