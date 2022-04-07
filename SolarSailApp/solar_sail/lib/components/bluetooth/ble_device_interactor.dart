@@ -75,6 +75,8 @@ class BleDeviceInteractor {
     try {
       _logMessage(
           'Write with response value : $value to ${characteristic.characteristicId}');
+      print(
+          'Write with response value : $value to ${characteristic.characteristicId}');
       await _writeWithResponse(characteristic, value: value);
     } on Exception catch (e, s) {
       _logMessage(

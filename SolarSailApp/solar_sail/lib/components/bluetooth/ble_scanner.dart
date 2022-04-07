@@ -4,6 +4,8 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:meta/meta.dart';
 import 'package:solar_sail/components/bluetooth/reactive_state.dart';
 
+String DEVICENAME = "SOLARSAIL";
+
 class BleScanner implements ReactiveState<BleScannerState> {
   BleScanner({
     required FlutterReactiveBle ble,
@@ -30,8 +32,13 @@ class BleScanner implements ReactiveState<BleScannerState> {
       final knownDeviceIndex = _devices.indexWhere((d) => d.id == device.id);
       if (knownDeviceIndex >= 0) {
         _devices[knownDeviceIndex] = device;
-      } else {
-        _devices.add(device);
+      } else /* if (device.id == DEVICENAME) */ {
+        if (device.name != "") {
+          _devices.add(device);
+        }
+        /* if (device.name != null) {
+          print(device.name);
+        } */
       }
       _pushState();
     }, onError: (Object e) => _logMessage('Device scan fails with error: $e'));
@@ -49,7 +56,7 @@ class BleScanner implements ReactiveState<BleScannerState> {
 
   Future<void> stopScan() async {
     _logMessage('Stop ble discovery');
-
+    _devices.clear(); // Clear devices when scanning stops
     await _subscription?.cancel();
     _subscription = null;
     _pushState();

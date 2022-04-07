@@ -6,8 +6,10 @@ import 'package:solar_sail/components/bluetooth/ble_device_interactor.dart';
 import 'package:solar_sail/components/bluetooth/ble_logger.dart';
 import 'package:solar_sail/components/bluetooth/ble_scanner.dart';
 import 'package:solar_sail/components/bluetooth/ble_status_monitor.dart';
-import 'package:solar_sail/components/bluetooth/bluetooth.dart';
+import 'package:solar_sail/screens/ble_status_screen.dart';
+import 'package:solar_sail/screens/connect_screen/connect_screen.dart';
 import 'package:solar_sail/screens/main_screen/main_screen.dart';
+import 'package:solar_sail/screens/test_screen/test_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +52,12 @@ void main() {
               connectionState: DeviceConnectionState.disconnected,
               failure: null))
     ],
-    child: const MyApp(),
+    child: MaterialApp(
+      title: "ESP32 controller",
+      theme: ThemeData(primaryColor: Colors.white),
+      debugShowCheckedModeBanner: false,
+      home: const MyApp(),
+    ),
   ));
 }
 
@@ -59,13 +66,12 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-      ),
-      home: const MainScreen(),
-    );
-  }
+  Widget build(BuildContext context) =>
+      Consumer<BleStatus?>(builder: (_, status, __) {
+        if (status == BleStatus.ready) {
+          return ConnectScreen();
+        } else {
+          return BleStatusScreen(status: BleStatus.unknown);
+        }
+      });
 }

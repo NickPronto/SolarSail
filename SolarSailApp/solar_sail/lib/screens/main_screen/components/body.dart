@@ -1,11 +1,12 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:solar_sail/components/bluetooth/bluetooth.dart';
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -19,13 +20,9 @@ class _BodyState extends State<Body> {
   bool _isConnected = false;
   int _alpha = 255;
 
-  static const String DEVICENAME = "SOLARSAIL";
-
-  static const String serviceUuid = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-  static const String characteristicUuid =
-      "beb5483e-36e1-4688-b7f5-ea07361b26a8";
-
   final _ble = FlutterReactiveBle();
+  StreamSubscription? _subscription;
+  StreamSubscription<ConnectionStateUpdate>? _connection;
 
   @override
   Widget build(BuildContext context) {
@@ -154,12 +151,6 @@ class _BodyState extends State<Body> {
         icon: false ? Icon(Icons.bluetooth) : Icon(Icons.bluetooth_disabled),
         onPressed: () {
           //solarBluetooth.beginBLE();
-
-          _ble.scanForDevices(withServices: [Uuid.parse(serviceUuid)]).listen(
-              (device) {
-            print(device.id);
-            // _ble.connectToDevice(id: device.id).listen((connectionState) {});
-          });
         },
         iconSize: 40,
       ),

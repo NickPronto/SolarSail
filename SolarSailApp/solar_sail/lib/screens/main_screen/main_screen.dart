@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:solar_sail/components/bluetooth/bluetooth.dart';
 import 'package:solar_sail/screens/ble_status_screen.dart';
 import 'package:solar_sail/screens/main_screen/components/body.dart';
 import 'package:provider/provider.dart';
