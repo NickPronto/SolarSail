@@ -82,7 +82,7 @@ void loop() {
       trackRight();
     }
     else if (rightLightValue = leftLightValue) {
-      pause();
+      halt();
     }
     else {
       layFlat();
@@ -213,7 +213,7 @@ void LinearActuatorSwitch(int linearActuatorState) {
   }
 }
 
-void pause() {
+void halt() {
   magLockSwitch(lock, lock);
   LinearActuatorSwitch(off);
 }
