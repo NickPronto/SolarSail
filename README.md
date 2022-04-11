@@ -1,5 +1,4 @@
 # SolarSail
-Arduino code for sensor and actuator controls.
 
 I’ve been developing a fun little side project: A lay flat, solar tracker for mobile/emergency/home use. Would love to get any feedback you had on the code or the sketches!!
 
